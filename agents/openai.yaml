@@ -1,0 +1,7 @@
+interface:
+  display_name: "PRD 到交互设计"
+  short_description: "串联需求分析、竞品研究、HTML 与飞书设计文档交付"
+  brand_color: "#0055A4"
+  default_prompt: "使用 $prd-to-design，把这份需求整理成交互设计分析，并生成 HTML 或飞书设计文档；必要时附独立竞品分析文档。"
+policy:
+  allow_implicit_invocation: true
