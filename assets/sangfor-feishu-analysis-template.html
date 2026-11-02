@@ -29,6 +29,8 @@
     html { scroll-behavior: smooth; scroll-padding-top: 104px; }
     body { margin: 0; color: var(--text); background: var(--page); font: 15px/1.85 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-decoration: none; }
+    .chapter a[href]:not(.text-button):not(.solid-button), .chapter a[href]:visited:not(.text-button):not(.solid-button) { color: var(--blue-deep); font-weight: 650; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+    .chapter a[href]:not(.text-button):not(.solid-button):hover { color: var(--blue); text-decoration-thickness: 2px; }
     button { font: inherit; }
     button:focus-visible, a:focus-visible { outline: 3px solid #83c9f9; outline-offset: 3px; }
     ::selection { color: #174380; background: #d5ecff; }
@@ -208,6 +210,11 @@
     @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; } }
 
     .evidence-line { margin: 12px 0 0; color: #8194a5; font-size: 11px; }
+    .benchmark-boundary { display: block; margin-top: 8px; color: #7b8b98; font-size: 11px; line-height: 1.55; font-weight: 400; }
+    .benchmark-reference { font-weight: 400; }
+    .benchmark-reference p { margin: 0 0 7px; line-height: 1.7; }
+    .benchmark-reference p:last-of-type { margin-bottom: 0; }
+    .benchmark-reference strong { color: #29485f; font-weight: 700; }
     .source-tag { display: inline-block; margin-right: 6px; padding: 1px 7px; border: 1px solid #dce8ef; border-radius: 5px; background: #f8fbfd; color: #688093; font-size: 10px; font-weight: 700; }
     .source-tag.design { color: #1e78a7; background: #edf8ff; border-color: #d3eafd; }
     .source-tag.unknown { color: #a4732f; background: #fff8eb; border-color: #f3e4c6; }
@@ -265,8 +272,8 @@
     .journey-layer-hidden { display: none !important; }
     .journey-map { margin: 18px 0 25px; overflow: hidden; border: 1px solid #dbe8f2; border-radius: 13px; background: #fff; }
     .journey-scroll { overflow-x: auto; overscroll-behavior-x: contain; }
-    .journey-board { position: relative; min-width: 1420px; --journey-label: 146px; --journey-step: calc((100% - var(--journey-label))/8); }
-    .journey-row { display: grid; grid-template-columns: var(--journey-label) repeat(8,minmax(118px,1fr)); }
+    .journey-board { position: relative; --journey-label: 146px; --journey-cols: 8; min-width: calc(var(--journey-label) + var(--journey-cols) * 190px); --journey-step: calc((100% - var(--journey-label))/var(--journey-cols)); }
+    .journey-row { display: grid; grid-template-columns: var(--journey-label) repeat(var(--journey-cols,8),minmax(190px,1fr)); }
     .journey-row + .journey-row { border-top: 1px solid #e6eef4; }
     .journey-cell { min-height: 84px; padding: 13px 14px; border-left: 1px solid #e6eef4; background: #fff; font-size: 11px; line-height: 1.6; }
     .journey-cell:first-child { border-left: 0; background: #f5f9fc; color: #38566d; font-weight: 720; }
@@ -287,12 +294,12 @@
     .journey-row.substage .stage-tone-4 { background: #faf7fd; }
     .journey-row.substage .stage-tone-5 { background: #fffbf4; }
     .journey-row.substage .stage-tone-6 { background: #f6f8fd; }
-    .journey-row:not(.phase) > :nth-child(4), .journey-row:not(.phase) > :nth-child(6), .journey-row:not(.phase) > :nth-child(8) { border-left: 2px solid #c9d9e6; }
+    .journey-row:not(.phase) > .phase-start { border-left: 2px solid #c9d9e6; }
     .journey-cell strong { display: block; margin-bottom: 4px; color: #29475d; }
     .journey-band { display: flex; justify-content: space-between; gap: 14px; padding: 8px 14px; border-top: 1px solid #dbe8f2; border-bottom: 1px solid #e6eef4; background: #eff6fc; color: #58748a; font-size: 10px; }
     .journey-band strong { font-size: 11px; }
-    .journey-flow { position: relative; isolation: isolate; padding: 38px 0 42px; background: #fff; }
-    .journey-role { height: 108px; }
+    .journey-flow { position: relative; isolation: isolate; padding: 82px 0 42px; background: #fff; }
+    .journey-role { min-height: 128px; }
     .journey-role > div { position: relative; display: flex; align-items: center; justify-content: center; border-right: 1px solid #edf2f6; border-bottom: 1px solid #edf2f6; }
     .journey-role > .journey-role-label { z-index: 4; align-items: flex-start; flex-direction: column; padding: 13px 14px; background: #f5f9fc; }
     .journey-role-label strong { color: #38566d; font-size: 11px; }
@@ -320,7 +327,7 @@
     .journey-row.idea .journey-cell:not(:first-child) { background: #f4fbeb; color: #28725f; }
     .journey-row.evidence .journey-cell:not(:first-child) { background: #f7faff; color: #4c6980; }
     .journey-row.optional .journey-cell { min-height: 66px; }
-    .journey-row.optional .journey-wide { grid-column: 2 / 10; display: flex; align-items: center; justify-content: center; text-align: center; color: #71879a; background: #fbfdff; }
+    .journey-row.optional .journey-wide { grid-column: 2 / -1; display: flex; align-items: center; justify-content: center; text-align: center; color: #71879a; background: #fbfdff; }
     .journey-handoffs { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 9px; padding: 13px; border-top: 1px solid #dbe8f2; background: #f7faff; }
     .journey-handoffs div { padding: 10px 11px; border-left: 3px solid #afc7d9; background: #fff; color: #688094; font-size: 10px; line-height: 1.55; }
     .journey-handoffs strong { display: block; margin-bottom: 4px; color: #365a73; font-size: 10px; }
@@ -454,62 +461,133 @@
           <h3>Case 阶段与角色交接</h3>
           <div class="stage-grid"><div class="stage"><strong>阶段 01 · 准备</strong><p>[执行角色的动作与判断]</p><em>[现状断点 / 目标体验]</em></div><div class="stage"><strong>阶段 02 · 完成任务</strong><p>[关键操作与系统反馈]</p><em>[设计策略与待验证点]</em></div><div class="stage"><strong>阶段 03 · 交接 / 结果</strong><p>[交接给谁、交接什么]</p><em>[可观察的完成标识]</em></div></div>
           <p class="evidence-line"><span class="source-tag">现状证据</span>[来源]　<span class="source-tag design">目标方案</span>[设计判断]　<span class="source-tag unknown">未知</span>[需验证的环节]</p>
-          <h3>完整现状旅程 <span class="chip gray">条件必需</span></h3>
+          <h3>完整用户旅程 <span class="chip gray">条件必需</span></h3>
           <p>[任务跨阶段、角色或触点并存在交接断点时使用。一个旅程围绕一个 Case；阶段与存在的子阶段横向排列，体验维度和参与角色纵向排列。同一阶段可包含多个动作，使用 A1、A2……保持“所做—所想—痛点—需求—点子—证据”的追踪关系。生成真实项目文档时替换方括号内容，并删除不适用的可选行。]</p>
-          <div class="journey-context" aria-label="旅程上下文">
-            <div><strong>产品 / 模块 · 核心用户</strong>[产品名称 / 模块名称]<br>[核心用户，以及希望完成的业务任务与最终结果]</div>
-            <div><strong>其他目标用户 · 场景 / 覆盖范围</strong>[其他目标用户]<br>[Case 场景] · [覆盖阶段或任务范围]</div>
-            <div><strong>起止边界 · 地图性质 / 证据状态</strong>[起点或前提] → [可观察的完成标识]<br>[现状还原 / 推断草案 / 已研究验证] · [来源或待采证方式]</div>
-            <div><strong>参与角色 / 阅读规则</strong>[核心用户、协作角色 A、协作角色 B……]<br>[同列表示同一阶段；A1/A2 为动作编号；连接线表示依赖或交接]</div>
-          </div>
-          <div class="journey-legend" aria-label="旅程连线图例"><span><i></i>交接 / 依赖 →</span><span><i class="branch"></i>并行分叉 / 汇合</span><span><i class="return"></i>异常返回</span></div>
-          <div class="journey-viewer" data-journey-viewer role="region" aria-label="现状用户旅程全屏阅读区">
-          <div class="journey-layer-toolbar" data-journey-controls data-target="journey-board" role="group" aria-label="选择旅程图中显示的内容层">
-            <button type="button" class="journey-fullscreen-button" data-journey-fullscreen aria-pressed="false">全屏查看</button>
-            <strong>显示内容</strong>
-            <label><input type="checkbox" data-layer-toggle="doing" checked>所做</label>
-            <label><input type="checkbox" data-layer-toggle="thinking" checked>所说 / 所想</label>
-            <label><input type="checkbox" data-layer-toggle="emotion" checked>情绪曲线</label>
-            <label><input type="checkbox" data-layer-toggle="pain" checked>痛点</label>
-            <label><input type="checkbox" data-layer-toggle="need" checked>需求</label>
-            <label><input type="checkbox" data-layer-toggle="idea" checked>点子</label>
-          </div>
-          <div class="journey-map" aria-label="完整现状用户旅程模板">
-            <div class="journey-scroll" role="region" aria-label="阶段为横轴，体验维度和角色为纵轴；窄屏可左右滚动" tabindex="0">
-              <div class="journey-board" id="journey-board">
-                <div class="journey-row head phase"><div class="journey-cell">阶段 →<small>分组表头，不等同于一个动作列</small></div><div class="journey-cell span-2 stage-tone-1">01 [阶段名称]<small>[阶段目标 / 关键结果]</small></div><div class="journey-cell span-2 stage-tone-2">02 [阶段名称]<small>[阶段目标 / 关键结果]</small></div><div class="journey-cell span-2 stage-tone-3">03 [阶段名称]<small>[阶段目标 / 关键结果]</small></div><div class="journey-cell span-2 stage-tone-4">04 [阶段名称]<small>[阶段目标 / 关键结果]</small></div></div>
-                <div class="journey-row head substage"><div class="journey-cell">子阶段 / 动作列 →<small>下方所有内容按最小动作列对齐</small></div><div class="journey-cell stage-tone-1">1.1 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div><div class="journey-cell stage-tone-1">1.2 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div><div class="journey-cell stage-tone-2">2.1 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div><div class="journey-cell stage-tone-2">2.2 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div><div class="journey-cell stage-tone-3">3.1 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div><div class="journey-cell stage-tone-3">3.2 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div><div class="journey-cell stage-tone-4">4.1 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div><div class="journey-cell stage-tone-4">4.2 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div></div>
-                <div class="journey-band" data-journey-layer="doing"><strong>多角色协作泳道 / 用户所做</strong><span>[同一阶段允许多个动作卡；每个动作使用稳定编号；交接、依赖和异常由连接线表达]</span></div>
-                <div class="journey-flow" id="journey-flow" data-journey-layer="doing">
-                  <svg class="journey-edges" id="journey-edges" aria-hidden="true"></svg>
-                  <div class="journey-row journey-role user"><div class="journey-role-label"><strong>[核心用户]</strong><small>[旅程的主要体验主体]</small></div><div><div class="journey-node" id="ju1"><strong><span class="action-id">A1</span>[用户动作 / 判断]</strong>[输入 / 输出 / 完成标识]</div></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><div class="journey-node decision" id="ju4"><strong><span class="action-id">A6</span>[用户确认 / 决策]</strong>[完成或进入异常恢复]</div></div></div>
-                  <div class="journey-row journey-role role-a"><div class="journey-role-label"><strong>[协作角色 A]</strong><small>[职责或可见边界]</small></div><div><span class="journey-empty">—</span></div><div><div class="journey-node" id="ja2"><strong><span class="action-id">A2</span>[接收 / 核对 / 处理]</strong>[接手条件与输出]</div></div><div><span class="journey-empty">—</span></div><div><div class="journey-node" id="ja3"><strong><span class="action-id">A4</span>[汇合后的协作动作]</strong>[交付物或反馈]</div></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div></div>
-                  <div class="journey-row journey-role role-b"><div class="journey-role-label"><strong>[协作角色 B]</strong><small>[职责或可见边界]</small></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><div class="journey-node" id="jb2"><strong><span class="action-id">A3</span>[并行协作动作]</strong>[输入、判断与输出]</div></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><div class="journey-node" id="jb3"><strong><span class="action-id">A5</span>[处理 / 交付]</strong>[结果与接手条件]</div></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div></div>
-                  <div class="journey-flow-note">[只连接实际依赖、交接与反馈；无动作单元格使用“—”]</div>
-                </div>
-                <div class="journey-row thought" data-journey-layer="thinking"><div class="journey-cell">所说所想 / 疑问<small>逐动作列对齐；原话、观察或明确标注的推断</small></div><div class="journey-cell">[A1 · 有证据的用户原话 / 疑问]</div><div class="journey-cell">[A2 · 有证据的用户原话 / 疑问]</div><div class="journey-cell">[A3 · 有证据的用户原话 / 疑问]</div><div class="journey-cell">[A4 · 有证据的用户原话 / 疑问]</div><div class="journey-cell">[A5 · 有证据的用户原话 / 疑问]</div><div class="journey-cell">[A6 · 有证据的用户原话 / 疑问]</div><div class="journey-cell">[A7 · 无证据时标推断或删除]</div><div class="journey-cell">[A8 · 无证据时标推断或删除]</div></div>
-                <div class="journey-row optional" data-journey-layer="emotion"><div class="journey-cell">情绪走势（可选）<small>以动作节点采样，仅展示有来源的研究结果</small></div><div class="journey-cell journey-wide">[仅在有访谈、观察或测量证据时，按 A1、A2……绘制情绪走势并注明来源、尺度和样本；否则删除本行]</div></div>
-                <div class="journey-row pain" data-journey-layer="pain"><div class="journey-cell">现状断点 / 关键时刻<small>逐动作列对齐；有证据的阻碍与影响</small></div><div class="journey-cell"><strong>[A1 · 阻碍或不确定性]</strong>[影响]</div><div class="journey-cell"><strong>[A2 · 阻碍或不确定性]</strong>[影响]</div><div class="journey-cell"><strong>[A3 · 阻碍或不确定性]</strong>[影响]</div><div class="journey-cell"><strong>[A4 · 阻碍或不确定性]</strong>[影响]</div><div class="journey-cell"><strong>[A5 · 阻碍或不确定性]</strong>[影响]</div><div class="journey-cell"><strong>[A6 · 阻碍或不确定性]</strong>[影响]</div><div class="journey-cell"><strong>[A7 · 阻碍或不确定性]</strong>[影响]</div><div class="journey-cell"><strong>[A8 · 阻碍或不确定性]</strong>[影响]</div></div>
-                <div class="journey-row need" data-journey-layer="need"><div class="journey-cell">用户需求<small>从对应动作与痛点推导的能力或结果</small></div><div class="journey-cell"><strong>[A1 · 用户需要一种方式来……]</strong>[以便……]</div><div class="journey-cell"><strong>[A2 · 用户需要一种方式来……]</strong>[以便……]</div><div class="journey-cell"><strong>[A3 · 用户需要一种方式来……]</strong>[以便……]</div><div class="journey-cell"><strong>[A4 · 用户需要一种方式来……]</strong>[以便……]</div><div class="journey-cell"><strong>[A5 · 用户需要一种方式来……]</strong>[以便……]</div><div class="journey-cell"><strong>[A6 · 用户需要一种方式来……]</strong>[以便……]</div><div class="journey-cell"><strong>[A7 · 用户需要一种方式来……]</strong>[以便……]</div><div class="journey-cell"><strong>[A8 · 用户需要一种方式来……]</strong>[以便……]</div></div>
-                <div class="journey-row idea" data-journey-layer="idea"><div class="journey-cell">设计点子 / 优先级 / 责任<small>逐需求对齐的方案假设</small></div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A1 / 需求] · [责任待确认]</div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A2 / 需求] · [责任待确认]</div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A3 / 需求] · [责任待确认]</div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A4 / 需求] · [责任待确认]</div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A5 / 需求] · [责任待确认]</div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A6 / 需求] · [责任待确认]</div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A7 / 需求] · [责任待确认]</div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A8 / 需求] · [责任待确认]</div></div>
-                <div class="journey-row evidence"><div class="journey-cell">衡量与证据<small>逐动作或需求对齐；指标口径与采证方式</small></div><div class="journey-cell"><strong>[A1 · 指标及口径]</strong>[证据 / 待采证]</div><div class="journey-cell"><strong>[A2 · 指标及口径]</strong>[证据 / 待采证]</div><div class="journey-cell"><strong>[A3 · 指标及口径]</strong>[证据 / 待采证]</div><div class="journey-cell"><strong>[A4 · 指标及口径]</strong>[证据 / 待采证]</div><div class="journey-cell"><strong>[A5 · 指标及口径]</strong>[证据 / 待采证]</div><div class="journey-cell"><strong>[A6 · 指标及口径]</strong>[证据 / 待采证]</div><div class="journey-cell"><strong>[A7 · 指标及口径]</strong>[证据 / 待采证]</div><div class="journey-cell"><strong>[A8 · 指标及口径]</strong>[证据 / 待采证]</div></div>
-              </div>
-            </div>
-            <div class="journey-handoffs"><div><strong>[H1 · 发起角色 → 接收角色]</strong>[交付物] · [接手条件] · [信息不足或失败时如何处理]</div><div><strong>[H2 · 并行角色 → 后续角色]</strong>[并行输出] · [汇合条件] · [进入下一阶段的判定]</div><div><strong>[H3 · 结果角色 → 主要用户]</strong>[结果反馈] · [用户确认方式] · [异常返回阶段与恢复动作]</div></div>
-          </div>
-          </div>
-          <h3>异常 Case <span class="chip gray">条件必需</span></h3>
-          <p>[当异常改变触发条件、角色协作或完成结果时，单独写明异常 Case 的起点、路径、交接物和完成标识；不要仅在状态表增加一行。]</p>
+          <h4>[Case 名称]</h4><div class="journey-context">
+<div><strong>产品 / 模块 · 核心用户</strong>[产品、模块、核心用户及任务]</div>
+<div><strong>其他目标用户 · 场景 / 覆盖范围</strong>[其他角色、场景与覆盖范围]</div>
+<div><strong>起止边界 · 地图性质 / 证据状态</strong>[起点、完成结果、地图性质与证据]</div>
+<div><strong>参与角色 / 阅读规则</strong>[参与角色、动作对齐与交接规则]</div>
+</div><div class="journey-legend"><span><i></i>交接 / 依赖 →</span><span><i class="return"></i>异常返回</span></div>
+<div class="journey-viewer" data-journey-viewer data-journey-component="1" role="region" aria-label="[Case 名称]旅程"><div class="journey-layer-toolbar" data-journey-controls data-target="template-journey-board" role="group" aria-label="选择旅程内容层"><button type="button" class="journey-fullscreen-button" data-journey-fullscreen aria-pressed="false">全屏查看</button><strong>显示内容</strong>
+<label><input type="checkbox" data-layer-toggle="doing" checked>所做</label>
+<label><input type="checkbox" data-layer-toggle="thinking" checked>所说 / 所想</label>
+<label><input type="checkbox" data-layer-toggle="pain" checked>痛点</label>
+<label><input type="checkbox" data-layer-toggle="need" checked>需求</label>
+<label><input type="checkbox" data-layer-toggle="idea" checked>点子</label>
+</div><div class="journey-map"><div class="journey-scroll" tabindex="0" role="region" aria-label="阶段与动作横向排列，角色和体验维度纵向排列"><div class="journey-board" id="template-journey-board" data-action-count="8" style="--journey-cols:8"><div class="journey-row head phase"><div class="journey-cell">阶段 →<small>阶段宽度取决于动作数量</small></div>
+<div class="journey-cell stage-tone-1" style="grid-column:span 2">01 [阶段名称]<small>[阶段结果]</small></div>
+<div class="journey-cell stage-tone-2" style="grid-column:span 2">02 [阶段名称]<small>[阶段结果]</small></div>
+<div class="journey-cell stage-tone-3" style="grid-column:span 2">03 [阶段名称]<small>[阶段结果]</small></div>
+<div class="journey-cell stage-tone-4" style="grid-column:span 2">04 [阶段名称]<small>[阶段结果]</small></div>
+</div><div class="journey-row head substage"><div class="journey-cell">动作列 →<small>动作、体验与证据逐列对齐</small></div>
+<div class="journey-cell stage-tone-1 ">A1 · [动作或判断]</div>
+<div class="journey-cell stage-tone-1 ">A2 · [动作或判断]</div>
+<div class="journey-cell stage-tone-2 phase-start">A3 · [动作或判断]</div>
+<div class="journey-cell stage-tone-2 ">A4 · [动作或判断]</div>
+<div class="journey-cell stage-tone-3 phase-start">A5 · [动作或判断]</div>
+<div class="journey-cell stage-tone-3 ">A6 · [动作或判断]</div>
+<div class="journey-cell stage-tone-4 phase-start">A7 · [动作或判断]</div>
+<div class="journey-cell stage-tone-4 ">A8 · [动作或判断]</div>
+</div><div class="journey-band" data-journey-layer="doing"><strong>多角色协作泳道 / 用户所做</strong><span>目标方案草案；现状证据见下方断点与证据行</span></div><div class="journey-flow" data-journey-layer="doing" data-journey-links="[{&quot;from&quot;: &quot;template-journey-A1&quot;, &quot;to&quot;: &quot;template-journey-A2&quot;, &quot;label&quot;: &quot;&quot;}, {&quot;from&quot;: &quot;template-journey-A2&quot;, &quot;to&quot;: &quot;template-journey-A3&quot;, &quot;label&quot;: &quot;[交接物]&quot;}, {&quot;from&quot;: &quot;template-journey-A3&quot;, &quot;to&quot;: &quot;template-journey-A4&quot;, &quot;label&quot;: &quot;&quot;}, {&quot;from&quot;: &quot;template-journey-A4&quot;, &quot;to&quot;: &quot;template-journey-A5&quot;, &quot;label&quot;: &quot;&quot;}, {&quot;from&quot;: &quot;template-journey-A5&quot;, &quot;to&quot;: &quot;template-journey-A6&quot;, &quot;label&quot;: &quot;&quot;}, {&quot;from&quot;: &quot;template-journey-A6&quot;, &quot;to&quot;: &quot;template-journey-A7&quot;, &quot;label&quot;: &quot;[交接物]&quot;}, {&quot;from&quot;: &quot;template-journey-A7&quot;, &quot;to&quot;: &quot;template-journey-A8&quot;, &quot;label&quot;: &quot;[交接物]&quot;}, {&quot;from&quot;: &quot;template-journey-A4&quot;, &quot;to&quot;: &quot;template-journey-A2&quot;, &quot;kind&quot;: &quot;return&quot;, &quot;label&quot;: &quot;[失败原因与返回]&quot;}, {&quot;from&quot;: &quot;template-journey-A6&quot;, &quot;to&quot;: &quot;template-journey-A5&quot;, &quot;kind&quot;: &quot;return&quot;, &quot;label&quot;: &quot;[失败原因与返回]&quot;}, {&quot;from&quot;: &quot;template-journey-A7&quot;, &quot;to&quot;: &quot;template-journey-A6&quot;, &quot;kind&quot;: &quot;return&quot;, &quot;label&quot;: &quot;[失败原因与返回]&quot;}]"><svg class="journey-edges" aria-hidden="true"></svg>
+<div class="journey-row journey-role user"><div class="journey-role-label"><strong>[核心用户]</strong><small>[职责]</small></div>
+<div class=""><div class="journey-node" id="template-journey-A1"><strong><span class="action-id">A1</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
+<div class=""><div class="journey-node" id="template-journey-A2"><strong><span class="action-id">A2</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
+<div class="phase-start"><span class="journey-empty">—</span></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class="phase-start"><span class="journey-empty">—</span></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class="phase-start"><span class="journey-empty">—</span></div>
+<div class=""><span class="journey-empty">—</span></div>
+</div>
+<div class="journey-row journey-role role-a"><div class="journey-role-label"><strong>[协作角色 A]</strong><small>[职责]</small></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class="phase-start"><div class="journey-node" id="template-journey-A3"><strong><span class="action-id">A3</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
+<div class=""><div class="journey-node" id="template-journey-A4"><strong><span class="action-id">A4</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
+<div class="phase-start"><div class="journey-node" id="template-journey-A5"><strong><span class="action-id">A5</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
+<div class=""><div class="journey-node" id="template-journey-A6"><strong><span class="action-id">A6</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
+<div class="phase-start"><span class="journey-empty">—</span></div>
+<div class=""><div class="journey-node" id="template-journey-A8"><strong><span class="action-id">A8</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
+</div>
+<div class="journey-row journey-role role-b"><div class="journey-role-label"><strong>[协作角色 B]</strong><small>[职责]</small></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class="phase-start"><span class="journey-empty">—</span></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class="phase-start"><span class="journey-empty">—</span></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class="phase-start"><div class="journey-node" id="template-journey-A7"><strong><span class="action-id">A7</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
+<div class=""><span class="journey-empty">—</span></div>
+</div>
+<div class="journey-flow-note">实线为任务依赖与交接；虚线为失败返回。具体交接条件见图下说明。</div></div>
+<div class="journey-row thought" data-journey-layer="thinking"><div class="journey-cell">所说所想 / 疑问（推断）</div>
+<div class="journey-cell "><strong>A1</strong>[有证据的疑问或标注推断]</div>
+<div class="journey-cell "><strong>A2</strong>[有证据的疑问或标注推断]</div>
+<div class="journey-cell phase-start"><strong>A3</strong>[有证据的疑问或标注推断]</div>
+<div class="journey-cell "><strong>A4</strong>[有证据的疑问或标注推断]</div>
+<div class="journey-cell phase-start"><strong>A5</strong>[有证据的疑问或标注推断]</div>
+<div class="journey-cell "><strong>A6</strong>[有证据的疑问或标注推断]</div>
+<div class="journey-cell phase-start"><strong>A7</strong>[有证据的疑问或标注推断]</div>
+<div class="journey-cell "><strong>A8</strong>[有证据的疑问或标注推断]</div>
+</div>
+<div class="journey-row pain" data-journey-layer="pain"><div class="journey-cell">现状断点 / 关键时刻</div>
+<div class="journey-cell "><strong>A1</strong>[现状断点与证据边界]</div>
+<div class="journey-cell "><strong>A2</strong>[现状断点与证据边界]</div>
+<div class="journey-cell phase-start"><strong>A3</strong>[现状断点与证据边界]</div>
+<div class="journey-cell "><strong>A4</strong>[现状断点与证据边界]</div>
+<div class="journey-cell phase-start"><strong>A5</strong>[现状断点与证据边界]</div>
+<div class="journey-cell "><strong>A6</strong>[现状断点与证据边界]</div>
+<div class="journey-cell phase-start"><strong>A7</strong>[现状断点与证据边界]</div>
+<div class="journey-cell "><strong>A8</strong>[现状断点与证据边界]</div>
+</div>
+<div class="journey-row need" data-journey-layer="need"><div class="journey-cell">用户需求</div>
+<div class="journey-cell "><strong>A1</strong>[用户需要的结果]</div>
+<div class="journey-cell "><strong>A2</strong>[用户需要的结果]</div>
+<div class="journey-cell phase-start"><strong>A3</strong>[用户需要的结果]</div>
+<div class="journey-cell "><strong>A4</strong>[用户需要的结果]</div>
+<div class="journey-cell phase-start"><strong>A5</strong>[用户需要的结果]</div>
+<div class="journey-cell "><strong>A6</strong>[用户需要的结果]</div>
+<div class="journey-cell phase-start"><strong>A7</strong>[用户需要的结果]</div>
+<div class="journey-cell "><strong>A8</strong>[用户需要的结果]</div>
+</div>
+<div class="journey-row idea" data-journey-layer="idea"><div class="journey-cell">设计点子 / 优先级与责任</div>
+<div class="journey-cell "><strong>A1</strong>[设计点子、优先级与责任]</div>
+<div class="journey-cell "><strong>A2</strong>[设计点子、优先级与责任]</div>
+<div class="journey-cell phase-start"><strong>A3</strong>[设计点子、优先级与责任]</div>
+<div class="journey-cell "><strong>A4</strong>[设计点子、优先级与责任]</div>
+<div class="journey-cell phase-start"><strong>A5</strong>[设计点子、优先级与责任]</div>
+<div class="journey-cell "><strong>A6</strong>[设计点子、优先级与责任]</div>
+<div class="journey-cell phase-start"><strong>A7</strong>[设计点子、优先级与责任]</div>
+<div class="journey-cell "><strong>A8</strong>[设计点子、优先级与责任]</div>
+</div>
+<div class="journey-row evidence" data-journey-layer="evidence"><div class="journey-cell">衡量与证据</div>
+<div class="journey-cell "><strong>A1</strong>[证据与验证方式]</div>
+<div class="journey-cell "><strong>A2</strong>[证据与验证方式]</div>
+<div class="journey-cell phase-start"><strong>A3</strong>[证据与验证方式]</div>
+<div class="journey-cell "><strong>A4</strong>[证据与验证方式]</div>
+<div class="journey-cell phase-start"><strong>A5</strong>[证据与验证方式]</div>
+<div class="journey-cell "><strong>A6</strong>[证据与验证方式]</div>
+<div class="journey-cell phase-start"><strong>A7</strong>[证据与验证方式]</div>
+<div class="journey-cell "><strong>A8</strong>[证据与验证方式]</div>
+</div>
+</div></div><div class="journey-handoffs">
+<div><strong>[发起角色 → 接收角色]</strong>[交接物、接手条件与失败处理]</div>
+<div><strong>[发起角色 → 接收角色]</strong>[交接物、接手条件与失败处理]</div>
+<div><strong>[发起角色 → 接收角色]</strong>[交接物、接手条件与失败处理]</div>
+</div></div></div>
+          <h3>Case 内的异常分支 <span class="chip gray">条件必需</span></h3>
+          <p>[在所属 Case 内写明异常触发、反馈、恢复动作、返回位置及恢复完成标识，不另建异常 Case。]</p>
           <h3>研究测量 <span class="chip gray">可选</span></h3>
           <p>[只有存在访谈或测量证据时，才呈现情绪、耗时和满意度；记录样本、时间与口径。]</p>
         </section>
 
         <section class="chapter" id="benchmark">
           <div class="chapter-head"><span class="chapter-index">03</span><div><h2>竞品参考与设计取舍 <span class="chip gray">条件必需</span></h2><p class="chapter-desc">有重要未知项或明确研究要求时，比较同一任务的真实体验证据。</p></div></div>
-          <p><strong>研究问题：</strong>[什么设计决定需要借助竞品或现状替代方案判断；明确比较的任务、角色与完成标准。]</p>
-          <div class="table-wrap"><table><thead><tr><th>参考对象与条件</th><th>同任务操作／反馈／交接／恢复证据</th><th>差异原因与适用条件</th><th>对本方案的启发</th></tr></thead><tbody><tr><td>[产品 / 版本 / 角色]</td><td>[实际观察与来源；未核查写未核查]</td><td>[为什么不同、何时适用]</td><td>[可借鉴或不采用的理由]</td></tr></tbody></table></div>
-          <p><strong>我方取舍与验证：</strong>[采用什么设计处理，怎样在页面、流程或规则中落地，又如何验证。竞品的能力说明不能直接证明易用性，也不能自动转成本期范围。]</p>
-          <p class="evidence-line"><span class="source-tag">附录</span>完整操作记录和截图集可放在末尾；正文保留影响设计决定的证据与结论。</p>
+          <p><strong>议题来源：</strong>[明确体验目标 → 设计目标中的关键策略 → 陈述式设计议题的对应关系；用现状断点校准优先级，并说明比较任务与完成标准。]</p>
+          <div class="callout green"><strong class="callout-title">本轮判断</strong><p>[说明研究深度、已有证据能回答什么、哪些体验问题尚不能判断；没有依据时不编造评分。]</p></div>
+          <div class="table-wrap"><table><thead><tr><th>设计议题</th><th>具体竞品、参考功能与功能亮点</th><th>可参考的点</th></tr></thead><tbody><tr><td>[从本项目目标与断点提炼的议题；可链接独立报告对应研究]</td><td><div class="benchmark-reference"><p><strong>具体竞品：</strong><a href="#guide">[产品名称与公开来源]</a></p><p><strong>参考功能：</strong>[产品中与本议题对应的具体功能及使用条件]</p><p><strong>功能亮点：</strong>[可核查的对象关系、操作、反馈或治理方式；写清对用户任务的作用]</p><small class="benchmark-boundary">[简述资料尚未覆盖的体验，完整缺口放详报。]</small></div></td><td>[适用条件、我方取舍与后续验证；不照搬竞品能力]</td></tr></tbody></table></div>
+          <p>[链接独立竞品研究详报；只在链接目标真实存在时展示。]</p>
         </section>
 
         <section class="chapter" id="solution">
@@ -681,43 +759,37 @@
       });
     })();
     (() => {
-      const flow = document.getElementById('journey-flow');
-      const svg = document.getElementById('journey-edges');
-      if (!flow || !svg) return;
       const ns = 'http://www.w3.org/2000/svg';
-      const make = (tag, attrs, text) => { const node = document.createElementNS(ns, tag); Object.entries(attrs || {}).forEach(([key, value]) => node.setAttribute(key, value)); if (text) node.textContent = text; return node; };
-      const box = id => { const rect = document.getElementById(id).getBoundingClientRect(); const base = flow.getBoundingClientRect(); return { l: rect.left - base.left, r: rect.right - base.left, t: rect.top - base.top, b: rect.bottom - base.top, x: rect.left - base.left + rect.width / 2, y: rect.top - base.top + rect.height / 2 }; };
-      const draw = () => {
-        const width = flow.clientWidth, height = flow.clientHeight;
-        svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-        svg.replaceChildren();
-        const defs = make('defs');
-        [['journey-arrow','#7092ae'],['journey-return-arrow','#aa741b']].forEach(([id,color]) => { const marker = make('marker',{ id, viewBox:'0 0 10 10', refX:9, refY:5, markerWidth:5, markerHeight:5, orient:'auto' }); marker.appendChild(make('path',{ d:'M0 0 L10 5 L0 10Z', fill:color })); defs.appendChild(marker); });
-        svg.appendChild(defs);
-        const edge = (points, kind = 'edge', arrow = true) => { const path = make('path',{ d:points.map((point,index) => `${index ? 'L' : 'M'} ${point[0]} ${point[1]}`).join(' '), class:kind }); if (arrow) path.setAttribute('marker-end',`url(#${kind.includes('return') ? 'journey-return-arrow' : 'journey-arrow'})`); svg.appendChild(path); };
-        const label = (x,y,text,isReturn = false) => { const labelWidth = Math.max(86,text.length * 9 + 14); svg.appendChild(make('rect',{ x:x-labelWidth/2, y:y-9, width:labelWidth, height:18, rx:4, class:'journey-label-bg' })); svg.appendChild(make('text',{ x, y:y+3, 'text-anchor':'middle', class:`journey-edge-label${isReturn ? ' return' : ''}` },text)); };
-        const u1 = box('ju1'), u4 = box('ju4'), a2 = box('ja2'), a3 = box('ja3'), b2 = box('jb2'), b3 = box('jb3');
-        const handoffX = (u1.r + a2.l) / 2;
-        edge([[u1.r,u1.y],[handoffX,u1.y],[handoffX,a2.y],[a2.l,a2.y]]);
-        label(handoffX - 4,(u1.y+a2.y)/2,'[H1 · 交接物]');
-        const forkX = (a2.r + b2.l) / 2;
-        edge([[a2.r,a2.y],[forkX,a2.y]],'edge',false);
-        svg.appendChild(make('line',{ x1:forkX,y1:a2.y-6,x2:forkX,y2:b2.y+6,class:'join' }));
-        edge([[forkX,b2.y],[b2.l,b2.y]]);
-        const joinX = (b2.r + a3.l) / 2;
-        edge([[b2.r,b2.y],[joinX,b2.y]],'edge',false);
-        edge([[joinX,b2.y],[joinX,a3.y],[a3.l,a3.y]]);
-        const relayX = (a3.r + b3.l) / 2;
-        edge([[a3.r,a3.y],[relayX,a3.y],[relayX,b3.y],[b3.l,b3.y]]);
-        const resultX = (b3.r + u4.l) / 2;
-        edge([[b3.r,b3.y],[resultX,b3.y],[resultX,u4.y],[u4.l,u4.y]]);
-        label(resultX - 4,(b3.y+u4.y)/2,'[H3 · 结果反馈]');
-        const railY = 18, returnX = a2.x;
-        edge([[u4.x,u4.t],[u4.x,railY],[returnX,railY],[returnX,a2.t-12],[a2.x,a2.t-12],[a2.x,a2.t]],'edge return');
-        label((u4.x + returnX) / 2,railY,'[异常触发 → 返回阶段 / 恢复动作]',true);
-      };
-      new ResizeObserver(draw).observe(flow);
-      if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw); else draw();
+      document.querySelectorAll('.journey-flow[data-journey-links]').forEach((flow, index) => {
+        const svg = flow.querySelector('.journey-edges');
+        const links = JSON.parse(flow.dataset.journeyLinks);
+        const make = (tag, attrs, text) => { const el = document.createElementNS(ns, tag); Object.entries(attrs || {}).forEach(([key, value]) => el.setAttribute(key, value)); if (text) el.textContent = text; return el; };
+        const draw = () => {
+          if (!flow.clientWidth || !flow.clientHeight) return;
+          const base = flow.getBoundingClientRect();
+          const box = id => { const el = document.getElementById(id); if (!el || !flow.contains(el)) return null; const r = el.getBoundingClientRect(); return {l:r.left-base.left,r:r.right-base.left,t:r.top-base.top,b:r.bottom-base.top,x:r.left-base.left+r.width/2,y:r.top-base.top+r.height/2}; };
+          svg.setAttribute('viewBox', `0 0 ${flow.clientWidth} ${flow.clientHeight}`);
+          svg.replaceChildren();
+          const defs = make('defs');
+          ['main','return'].forEach(kind => { const marker = make('marker',{id:`journey-${index}-${kind}`,viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:5,markerHeight:5,orient:'auto'}); marker.append(make('path',{d:'M0 0 L10 5 L0 10Z',fill:kind==='main'?'#7092ae':'#aa741b'})); defs.append(marker); });
+          svg.append(defs);
+          let returnIndex = 0;
+          links.forEach(link => {
+            const a=box(link.from), b=box(link.to); if (!a || !b) return;
+            const isReturn = link.kind === 'return';
+            const mid=(a.r+b.l)/2;
+            const rail=14+(returnIndex%3)*22;
+            let points, x, y;
+            if (isReturn) { returnIndex++; points=[[a.x,a.t],[a.x,rail],[b.x,rail],[b.x,b.t]]; x=(a.x+b.x)/2; y=rail; }
+            else { points=[[a.r,a.y],[mid,a.y],[mid,b.y],[b.l,b.y]]; x=mid; y=Math.abs(a.y-b.y)>12?(a.y+b.y)/2:a.y-18; }
+            svg.append(make('path',{d:points.map((p,i)=>`${i?'L':'M'} ${p[0]} ${p[1]}`).join(' '),class:isReturn?'edge return':'edge','marker-end':`url(#journey-${index}-${isReturn?'return':'main'})`}));
+            if (link.label) { const w=Math.max(70,link.label.length*9+14); svg.append(make('rect',{x:x-w/2,y:y-10,width:w,height:20,rx:4,class:'journey-label-bg'})); svg.append(make('text',{x,y:y+3,'text-anchor':'middle',class:isReturn?'journey-edge-label return':'journey-edge-label'},link.label)); }
+          });
+        };
+        new ResizeObserver(draw).observe(flow);
+        window.addEventListener('resize',draw);
+        if(document.fonts?.ready) document.fonts.ready.then(draw); else draw();
+      });
     })();
     (() => {
       const ns = 'http://www.w3.org/2000/svg';
@@ -749,10 +821,34 @@
           const byStep = new Map(cells.map(cell => [Number(cell.dataset.step), cell]));
           cells.slice(0, -1).forEach((cell, index) => {
             const from = box(cell), to = box(cells[index + 1]);
-            const x1 = from.r + 4, y1 = from.t + Math.min(from.h / 2, 62);
-            const x2 = to.l - 7, y2 = to.t + Math.min(to.h / 2, 62);
-            const middle = (x1 + x2) / 2;
-            const d = Math.abs(y1 - y2) < 6 ? `M ${x1} ${y1} L ${x2} ${y2}` : `M ${x1} ${y1} H ${middle} V ${y2} H ${x2}`;
+            const centerX = r => r.l + r.w / 2;
+            const centerY = r => r.t + r.h / 2;
+            const sameRow = Math.abs(centerY(from) - centerY(to)) < 18;
+            const sameColumn = Math.abs(centerX(from) - centerX(to)) < 18;
+            let d;
+            if (sameRow && to.l >= from.r) {
+              const y = from.t + Math.min(from.h / 2, 62);
+              d = `M ${from.r + 4} ${y} H ${to.l - 7}`;
+            } else if (sameColumn && to.t >= from.b) {
+              const x = centerX(from);
+              d = `M ${x} ${from.b + 4} V ${to.t - 7}`;
+            } else if (sameColumn && from.t >= to.b) {
+              const x = centerX(from);
+              d = `M ${x} ${from.t - 4} V ${to.b + 7}`;
+            } else if (to.t >= from.b) {
+              const x1 = centerX(from), x2 = centerX(to), railY = (from.b + to.t) / 2;
+              d = `M ${x1} ${from.b + 4} V ${railY} H ${x2} V ${to.t - 7}`;
+            } else if (from.t >= to.b) {
+              const x1 = centerX(from), x2 = centerX(to), railY = (to.b + from.t) / 2;
+              d = `M ${x1} ${from.t - 4} V ${railY} H ${x2} V ${to.b + 7}`;
+            } else {
+              const rightward = centerX(to) >= centerX(from);
+              const x1 = rightward ? from.r + 4 : from.l - 4;
+              const x2 = rightward ? to.l - 7 : to.r + 7;
+              const y1 = from.t + Math.min(from.h / 2, 62);
+              const y2 = to.t + Math.min(to.h / 2, 62);
+              d = `M ${x1} ${y1} H ${(x1 + x2) / 2} V ${y2} H ${x2}`;
+            }
             svg.appendChild(make('path', { d, 'marker-end': `url(#process-main-${gridIndex})` }));
           });
           let returnIndex = 0;
@@ -760,12 +856,10 @@
             const source = branch.closest('.process-cell[data-step]');
             const target = byStep.get(Number(branch.dataset.returnStep));
             if (!source || !target || Number(target.dataset.step) >= Number(source.dataset.step)) return;
-            const from = box(branch), sourceBox = box(source), to = box(target);
-            const x1 = from.l - 4, y1 = from.t + from.h / 2;
-            const routeX = sourceBox.l - 16;
-            const railY = height - 17 - (returnIndex++ % 5) * 8;
-            const targetX = to.l + to.w / 2, targetY = to.b + 5;
-            const d = `M ${x1} ${y1} H ${routeX} V ${railY} H ${targetX} V ${targetY}`;
+            const from = box(source), to = box(target);
+            const railY = height - 18 - (returnIndex++ % 5) * 10;
+            const sourceX = from.l + from.w / 2, targetX = to.l + to.w / 2;
+            const d = `M ${sourceX} ${from.b + 4} V ${railY} H ${targetX} V ${to.b + 7}`;
             svg.appendChild(make('path', { d, class: 'return', 'marker-end': `url(#process-return-${gridIndex})` }));
           });
         };
