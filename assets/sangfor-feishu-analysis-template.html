@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>交互设计需求分析模板｜飞书分析框架 · 深信服风格</title>
+  <style>
+    :root {
+      --blue: #285ed6;
+      --blue-deep: #23479c;
+      --blue-soft: #eaf3ff;
+      --cyan: #168fca;
+      --green: #15a987;
+      --green-deep: #078b73;
+      --green-soft: #eafaf5;
+      --ink: #1d3044;
+      --text: #3e5165;
+      --muted: #718398;
+      --line: #e1ebf2;
+      --page: #f7fbff;
+      --paper: #fff;
+      --amber: #aa741b;
+      --amber-soft: #fff9eb;
+      --shadow: 0 16px 44px rgba(31, 82, 129, .055);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 104px; }
+    body { margin: 0; color: var(--text); background: var(--page); font: 15px/1.85 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #83c9f9; outline-offset: 3px; }
+    ::selection { color: #174380; background: #d5ecff; }
+
+    .topbar { position: sticky; top: 0; z-index: 20; height: 70px; border-bottom: 1px solid #e7eff6; background: rgba(255,255,255,.93); backdrop-filter: blur(18px); }
+    .topbar-inner { width: min(2200px, calc(100% - clamp(32px, 6vw, 160px))); height: 100%; margin: auto; display: flex; align-items: center; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 12px; color: var(--ink); font-weight: 750; letter-spacing: .015em; white-space: nowrap; }
+    .brand-icon { display: block; width: 42px; height: 36px; object-fit: contain; flex: none; }
+    .brand-name { font-size: 16px; }
+    .brand-divider { height: 20px; width: 1px; background: #d9e6ee; }
+    .doc-kind { font-size: 13px; color: var(--muted); white-space: nowrap; }
+    .top-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .text-button, .solid-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 36px; padding: 0 14px; border-radius: 10px; border: 1px solid #dce8f0; background: #fff; color: var(--blue-deep); font-size: 12px; font-weight: 650; cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s; white-space: nowrap; }
+    .text-button:hover { background: #f4f9ff; }
+    .solid-button { color: white; border-color: transparent; background: linear-gradient(105deg, var(--blue), #168fcb); box-shadow: 0 5px 13px rgba(36, 92, 181, .14); }
+    .solid-button:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(36, 92, 181, .2); }
+    .button-icon { width: 15px; height: 15px; flex: none; }
+
+    .shell { width: min(2200px, calc(100% - clamp(32px, 6vw, 160px))); margin: auto; }
+    .hero { position: relative; overflow: hidden; margin: 28px 0 30px; min-height: 280px; padding: 42px 52px 38px; border: 1px solid #d9ebe9; border-radius: 24px; background: radial-gradient(circle at 87% 22%, rgba(68,171,225,.14), transparent 32%), radial-gradient(circle at 69% 115%, rgba(52,181,135,.15), transparent 37%), linear-gradient(112deg, #fcfffd 0%, #f4fcf9 43%, #edf6ff 100%); box-shadow: 0 18px 44px rgba(33, 97, 114, .065); }
+    .hero::before { content: ""; position: absolute; width: 380px; height: 380px; border: 1px solid rgba(69, 160, 181, .13); border-radius: 50%; right: -125px; top: -265px; box-shadow: 0 0 0 54px rgba(255,255,255,.14), 0 0 0 110px rgba(36,151,185,.025); }
+    .hero::after { content: ""; position: absolute; width: 500px; height: 195px; right: -95px; bottom: -132px; border-radius: 50%; background: radial-gradient(ellipse, rgba(33,167,141,.12), transparent 70%); pointer-events: none; }
+    .hero-content { position: relative; z-index: 1; max-width: 830px; }
+    .hero-kicker { display: flex; align-items: center; gap: 9px; color: var(--blue-deep); font-size: 12px; font-weight: 750; letter-spacing: .06em; }
+    .hero-kicker::before { content: ""; width: 21px; height: 3px; border-radius: 5px; background: linear-gradient(90deg, var(--blue), var(--green)); }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    .hero h1 { margin: 18px 0 11px; color: var(--ink); font-size: clamp(30px, 3vw, 42px); line-height: 1.22; letter-spacing: -.035em; font-weight: 760; }
+    .hero-subtitle { margin: 0; color: var(--blue-deep); font-size: 18px; font-weight: 600; letter-spacing: .02em; }
+    .hero-intro { max-width: 690px; margin: 15px 0 25px; color: #65798d; line-height: 1.8; }
+    .meta-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .meta-pill { display: inline-flex; align-items: center; min-height: 29px; padding: 2px 11px; color: #50708f; background: rgba(255,255,255,.78); border: 1px solid #e0ebf5; border-radius: 8px; font-size: 12px; }
+    .meta-pill strong { margin-right: 4px; color: var(--ink); font-weight: 650; }
+    .hero-decoration { position: absolute; z-index: 0; right: 36px; bottom: 18px; width: 292px; height: 178px; opacity: .96; filter: drop-shadow(0 15px 26px rgba(31, 115, 151, .1)); }
+
+    .body-grid { display: grid; grid-template-columns: 230px minmax(0, 1fr); align-items: start; gap: 28px; padding-bottom: 75px; }
+    .sidebar { position: sticky; top: 94px; max-height: calc(100vh - 115px); overflow: auto; padding: 23px 13px 18px; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(255,255,255,.88); box-shadow: 0 7px 24px rgba(47, 91, 132, .035); scrollbar-width: thin; }
+    .sidebar-title { padding: 0 13px 12px; color: #8595a5; font-size: 11px; font-weight: 750; letter-spacing: .12em; }
+    .toc a { display: flex; gap: 11px; align-items: baseline; min-height: 35px; padding: 6px 12px; border-radius: 8px; color: #647789; font-size: 12.5px; line-height: 1.55; transition: background .2s, color .2s; }
+    .toc a span { flex: none; color: #a2b5c6; font-size: 11px; font-variant-numeric: tabular-nums; }
+    .toc a:hover, .toc a.active { color: var(--blue-deep); background: #edf5ff; font-weight: 650; }
+    .toc a.active span { color: var(--blue); }
+    .sidebar-note { margin: 18px 10px 0; padding: 12px 11px; border-top: 1px solid var(--line); color: #8494a3; font-size: 11px; line-height: 1.65; }
+    .document { min-width: 0; }
+    .chapter { margin-bottom: 24px; padding: 34px 38px 38px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); box-shadow: var(--shadow); scroll-margin-top: 90px; }
+    .chapter-head { display: flex; align-items: flex-start; gap: 17px; margin-bottom: 23px; }
+    .chapter-index { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border: 1px solid #cbe4f8; border-radius: 12px; background: linear-gradient(145deg, #f2f8ff, #eafbf7); color: var(--blue); font-size: 13px; font-weight: 780; }
+    .chapter h2 { margin: 1px 0 4px; color: var(--ink); font-size: 24px; line-height: 1.35; letter-spacing: -.02em; }
+    .chapter-desc { margin: 0; color: var(--muted); font-size: 13px; }
+    .chapter h3 { margin: 30px 0 12px; color: #20364c; font-size: 16px; line-height: 1.45; }
+    .chapter h4 { margin: 0 0 8px; color: #294054; font-size: 14px; }
+    .chapter p { margin-bottom: 14px; }
+    .chapter p:last-child { margin-bottom: 0; }
+    .chapter ul, .chapter ol { margin: 9px 0 16px; padding-left: 22px; }
+    .chapter li { padding-left: 2px; margin: 4px 0; }
+    .muted { color: var(--muted); }
+    .lead { color: #344e63; font-size: 16px; line-height: 1.9; }
+    .rule { height: 1px; margin: 25px 0; background: var(--line); }
+    .accent { color: var(--blue); font-weight: 650; }
+    .green-text { color: var(--green-deep); font-weight: 650; }
+    code { padding: 2px 5px; border-radius: 4px; color: #235a9a; background: #edf5fd; font: 12px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+    .summary-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .summary-item { min-height: 130px; padding: 18px 19px; border: 1px solid #dcecf9; border-radius: 13px; background: linear-gradient(135deg, #f7fbff, #f1f8ff); }
+    .summary-item:nth-child(2) { border-color: #d4efe7; background: linear-gradient(135deg, #f5fffb, #effbf7); }
+    .summary-item:nth-child(3) { background: #f9fbfe; }
+    .summary-label { margin-bottom: 10px; color: #72859a; font-size: 11px; letter-spacing: .04em; }
+    .summary-value { color: #29445c; font-size: 14px; font-weight: 650; line-height: 1.55; }
+    .summary-foot { margin-top: 7px; color: #7b8fa2; font-size: 11px; }
+    .callout { margin: 20px 0; padding: 16px 19px 17px; border: 1px solid #cde6f9; border-left: 3px solid var(--blue); border-radius: 0 12px 12px 0; background: #f5faff; }
+    .callout.green { border-color: #c8eee2; border-left-color: var(--green); background: #f3fdf9; }
+    .callout.amber { border-color: #f4e5bf; border-left-color: #d3a455; background: var(--amber-soft); }
+    .callout-title { display: block; margin-bottom: 5px; color: var(--ink); font-size: 13px; font-weight: 750; }
+    .callout p { margin: 0; font-size: 13px; }
+    .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+    .info-card { padding: 19px 20px; border: 1px solid #e1ebf3; border-radius: 12px; background: #fff; }
+    .info-card.blue { border-color: #d3e4fa; background: #f8fbff; }
+    .info-card.green { border-color: #cfebe3; background: #f6fffb; }
+    .info-card p { margin: 0; color: #6a7e8f; font-size: 13px; }
+    .card-topline { width: 24px; height: 3px; margin-bottom: 13px; border-radius: 3px; background: var(--blue); }
+    .info-card.green .card-topline { background: var(--green); }
+    .goal-chain { display: grid; gap: 0; margin: 18px 0 24px; }
+    .goal-chain .info-card { padding: 18px 22px; }
+    .goal-chain .info-card h4 { margin: 0 0 8px; }
+    .goal-chain .info-card p { max-width: 88ch; }
+    .goal-bridge { display: flex; align-items: center; gap: 12px; margin: 0 0 0 24px; padding: 9px 0; color: #55748a; font-size: 12px; line-height: 1.6; }
+    .goal-bridge::before { content: '↓'; align-self: stretch; display: grid; place-items: center; width: 24px; flex: none; border-left: 2px solid #9dbfd0; color: #5282a2; font-size: 17px; font-weight: 700; }
+    .goal-bridge strong { color: #315b76; }
+    .scope-row { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 18px; padding: 15px 0; border-bottom: 1px solid #ebf1f5; }
+    .scope-row:last-child { border-bottom: 0; }
+    .scope-name { color: #284255; font-size: 13px; font-weight: 700; }
+    .scope-detail { font-size: 13px; }
+    .chip { display: inline-block; margin: 0 5px 5px 0; padding: 2px 9px; border: 1px solid #d7e6f6; border-radius: 7px; background: #f5f9ff; color: #3762a0; font-size: 11px; line-height: 1.6; white-space: nowrap; }
+    .chip.green { border-color: #cdece2; background: #f0fbf7; color: #168d75; }
+    .chip.gray { border-color: #e0e8ee; background: #f7f9fb; color: #697d8e; }
+    .flow { display: flex; align-items: stretch; gap: 8px; width: 100%; overflow-x: auto; padding: 4px 0 8px; }
+    .flow-step { flex: 1 0 138px; min-width: 138px; padding: 16px 14px; border: 1px solid #d5e7f4; border-radius: 11px; background: #f7fbff; }
+    .flow-step:nth-of-type(3) { border-color: #d0eee4; background: #f5fffa; }
+    .flow-step strong { display: block; margin: 5px 0 3px; color: #2f4d64; font-size: 13px; }
+    .flow-step small { color: #8293a1; font-size: 11px; }
+    .flow-no { color: var(--blue); font-size: 11px; font-weight: 750; }
+    .flow-arrow { display: flex; align-items: center; color: #a5bfcd; font-size: 18px; }
+    .table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 11px; }
+    table { width: 100%; border-collapse: collapse; min-width: 640px; font-size: 12.5px; line-height: 1.65; }
+    th, td { padding: 12px 14px; border-bottom: 1px solid #eaf0f4; text-align: left; vertical-align: top; }
+    tr:last-child td { border-bottom: 0; }
+    th { color: #536b80; background: #f5faff; font-weight: 700; white-space: nowrap; }
+    td:first-child { color: #29485f; font-weight: 650; }
+    tbody tr:nth-child(even) { background: #fcfdff; }
+    .status { display: inline-block; min-width: 48px; padding: 1px 7px; border-radius: 5px; color: #167d69; background: #e8f8f2; font-size: 11px; font-weight: 700; text-align: center; }
+    .status.pending { color: #a17120; background: #fff6e4; }
+    .quote { margin: 16px 0; padding: 16px 19px; border-left: 3px solid var(--green); background: #f7fcfa; color: #3f6570; font-size: 14px; }
+    .check-list { padding: 0 !important; list-style: none; }
+    .check-list li { position: relative; padding: 0 0 0 26px; margin: 10px 0; }
+    .check-list li::before { content: "✓"; position: absolute; left: 0; top: 4px; display: grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; color: var(--green-deep); background: #ddf6ec; font-size: 10px; font-weight: 800; }
+    .decision { display: grid; grid-template-columns: 94px minmax(0, 1fr); gap: 12px; padding: 13px 0; border-bottom: 1px solid #eaf0f4; font-size: 13px; }
+    .decision:last-child { border-bottom: 0; }
+    .decision-label { color: #75899a; }
+    .decision-text { color: #425d70; }
+    .example-note { margin-top: 25px; padding: 13px 15px; border: 1px dashed #d8e8f1; border-radius: 9px; color: #8295a5; background: #fbfdff; font-size: 12px; }
+    .footer { display: flex; justify-content: space-between; gap: 15px; padding: 1px 2px 40px; color: #91a1ae; font-size: 11px; }
+    .back-top { position: fixed; z-index: 10; right: 24px; bottom: 24px; width: 40px; height: 40px; border: 1px solid #d8e8f1; border-radius: 11px; background: rgba(255,255,255,.95); color: var(--blue-deep); box-shadow: 0 8px 24px rgba(28,73,116,.11); cursor: pointer; opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .2s, transform .2s; }
+    .back-top.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+    @media (max-width: 1040px) {
+      .hero-decoration { right: 18px; width: 254px; opacity: .58; }
+      .body-grid { grid-template-columns: 190px minmax(0, 1fr); gap: 18px; }
+      .chapter { padding: 28px; }
+    }
+    @media (max-width: 760px) {
+      html { scroll-padding-top: 72px; }
+      .topbar { height: 60px; }
+      .topbar-inner, .shell { width: min(100% - 30px, 600px); }
+      .brand-name { font-size: 14px; }
+      .doc-kind, .brand-divider, .top-actions .text-button { display: none; }
+      .solid-button { min-height: 33px; padding: 0 10px; }
+      .hero { margin: 15px 0 18px; padding: 29px 24px 28px; min-height: 0; border-radius: 17px; }
+      .hero h1 { margin: 13px 0 8px; font-size: 29px; }
+      .hero-subtitle { font-size: 15px; }
+      .hero-intro { margin: 12px 0 18px; font-size: 13px; }
+      .hero-decoration { display: none; }
+      .body-grid { display: block; }
+      .sidebar { position: relative; top: auto; max-height: none; padding: 12px; margin-bottom: 17px; }
+      .sidebar-title, .sidebar-note { display: none; }
+      .toc { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: thin; }
+      .toc a { flex: none; white-space: nowrap; min-height: 32px; }
+      .chapter { padding: 24px 21px 27px; margin-bottom: 17px; border-radius: 15px; scroll-margin-top: 77px; }
+      .chapter-head { gap: 12px; margin-bottom: 18px; }
+      .chapter-index { width: 34px; height: 34px; font-size: 11px; }
+      .chapter h2 { font-size: 21px; }
+      .chapter-desc { font-size: 12px; }
+      .summary-strip, .two-col { grid-template-columns: 1fr; }
+      .summary-item { min-height: 0; }
+      .scope-row { grid-template-columns: 76px minmax(0,1fr); gap: 9px; }
+      .flow-step { flex-basis: 145px; }
+      .footer { flex-direction: column; gap: 2px; }
+    }
+    @media print {
+      @page { size: A4; margin: 16mm 15mm; }
+      html { scroll-behavior: auto; }
+      body { background: white; color: #22384a; font-size: 10pt; }
+      .topbar, .sidebar, .back-top, .hero-decoration, .example-note, .top-actions { display: none !important; }
+      .shell { width: 100%; }
+      .hero { margin: 0 0 11mm; padding: 0 0 8mm; border: 0; border-bottom: 2px solid #369bb4; border-radius: 0; box-shadow: none; background: white; }
+      .hero h1 { font-size: 25pt; }
+      .body-grid { display: block; padding: 0; }
+      .chapter { padding: 0; margin: 0 0 9mm; border: 0; box-shadow: none; break-inside: auto; }
+      .chapter-head { break-after: avoid; }
+      .chapter h2 { font-size: 17pt; }
+      .chapter h3, .info-card, .summary-item, .callout, .flow-step, tr { break-inside: avoid; }
+      .summary-item, .info-card, .callout, .flow-step { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .flow { overflow: visible; }
+      .flow-step { min-width: 0; }
+      .table-wrap { overflow: visible; }
+      table { min-width: 0; }
+      .footer { padding: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+
+    .evidence-line { margin: 12px 0 0; color: #8194a5; font-size: 11px; }
+    .source-tag { display: inline-block; margin-right: 6px; padding: 1px 7px; border: 1px solid #dce8ef; border-radius: 5px; background: #f8fbfd; color: #688093; font-size: 10px; font-weight: 700; }
+    .source-tag.design { color: #1e78a7; background: #edf8ff; border-color: #d3eafd; }
+    .source-tag.unknown { color: #a4732f; background: #fff8eb; border-color: #f3e4c6; }
+    .section-rule { margin: 20px 0; height: 1px; background: linear-gradient(90deg, #d4e7f5, #e7f2ec, transparent); }
+    .job-box { margin: 18px 0; padding: 22px 24px; border: 1px solid #d0e4f7; border-radius: 14px; background: linear-gradient(115deg, #f4f9ff, #f8fffc); }
+    .job-caption { margin-bottom: 8px; color: var(--blue); font-size: 11px; font-weight: 780; letter-spacing: .1em; }
+    .job-box p { margin: 0; color: #284860; font-size: 16px; font-weight: 650; line-height: 1.75; }
+    .case-block { padding: 20px 22px; border: 1px solid #dfeaf2; border-radius: 13px; background: #fff; }
+    .case-block + .case-block { margin-top: 20px; }
+    .case-head { display: flex; align-items: center; gap: 9px; margin-bottom: 11px; }
+    .case-head h3 { margin: 0; }
+    .case-no { color: #168fca; font-size: 11px; font-weight: 780; }
+    .case-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+    .case-facts div { padding: 11px 12px; border-radius: 8px; background: #f6fafe; color: #587084; font-size: 12px; }
+    .case-facts strong { display: block; margin-bottom: 2px; color: #294960; }
+    .stage-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin: 15px 0; }
+    .stage { padding: 15px; border: 1px solid #dceaf3; border-radius: 11px; background: #fbfdff; }
+    .stage:nth-child(2) { background: #f4faff; }
+    .stage:nth-child(3) { background: #f4fcf8; border-color: #d1eee2; }
+    .stage strong { display: block; margin-bottom: 7px; color: #28485f; font-size: 13px; }
+    .stage p { margin: 0 0 6px; color: #657d90; font-size: 12px; line-height: 1.6; }
+    .stage em { color: #158e77; font-style: normal; font-size: 11px; }
+    .track { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin: 18px 0; }
+    .track span { padding: 7px 9px; border: 1px solid #dce9f2; border-radius: 8px; background: #f8fbff; color: #42647f; font-size: 11px; font-weight: 650; }
+    .track b { color: #9bb4c4; font-size: 13px; }
+    details.optional { margin: 14px 0; border: 1px dashed #d5e7ef; border-radius: 10px; background: #fcfeff; }
+    details.optional summary { padding: 11px 14px; color: #476781; font-size: 13px; font-weight: 650; cursor: pointer; }
+    details.optional > div { padding: 0 15px 13px; color: #6d8393; font-size: 12px; }
+    @media (max-width: 760px) { .case-facts, .stage-grid { grid-template-columns: 1fr; } .job-box { padding: 17px; } .job-box p { font-size: 14px; } .case-block { padding: 16px; } }
+    @media print { details.optional { display: none; } .job-box, .case-block, .stage { break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+    .hero-decoration { width: 310px; height: 190px; opacity: .14; filter: none; }
+    .journey-context { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); margin: 15px 0; overflow: hidden; border: 1px solid #dbe8f2; border-radius: 11px; background: #fbfdff; }
+    .journey-context > div { min-height: 82px; padding: 12px 14px; border-left: 1px solid #e6eef4; color: #60798c; font-size: 11px; line-height: 1.55; }
+    .journey-context > div:first-child { border-left: 0; }
+    .journey-context strong { display: block; margin-bottom: 4px; color: #29475d; font-size: 12px; }
+    .journey-legend { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 14px; margin: 10px 0; color: #688096; font-size: 10px; }
+    .journey-legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .journey-legend i { width: 19px; border-top: 2px solid #6b94b5; }
+    .journey-legend i.branch { width: 5px; height: 9px; border-top: 0; border-left: 4px solid #6b94b5; }
+    .journey-legend i.return { border-top-style: dashed; border-color: #aa741b; }
+    .journey-layer-toolbar { display: flex; justify-content: flex-start; align-items: center; flex-wrap: wrap; gap: 7px 13px; margin: 10px 0 12px; padding: 9px 11px; border: 1px solid #dbe8f2; border-radius: 9px; background: #f8fbfd; color: #58748a; font-size: 10px; }
+    .journey-layer-toolbar > strong { margin-right: 2px; color: #355675; font-size: 10px; }
+    .journey-layer-toolbar label { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; }
+    .journey-layer-toolbar input { width: 13px; height: 13px; margin: 0; accent-color: #2e73d5; cursor: pointer; }
+    .journey-layer-toolbar label:has(input:focus-visible) { outline: 2px solid rgba(46,115,213,.28); outline-offset: 3px; border-radius: 3px; }
+    .journey-fullscreen-button { flex: none; min-height: 36px; margin-right: 7px; padding: 7px 15px; border: 1px solid #285ed6; border-radius: 8px; background: linear-gradient(105deg, #285ed6, #168fcb); color: #fff; font: inherit; font-size: 12px; font-weight: 750; box-shadow: 0 4px 12px rgba(40,94,214,.18); cursor: pointer; white-space: nowrap; }
+    .journey-fullscreen-button:hover { background: linear-gradient(105deg, #234fb7, #137db3); box-shadow: 0 6px 15px rgba(40,94,214,.24); }
+    .journey-fullscreen-button:focus-visible { outline: 2px solid #2e73d5; outline-offset: 2px; }
+    .journey-viewer:fullscreen, .journey-viewer.is-expanded { position: fixed; inset: 0; z-index: 10000; box-sizing: border-box; width: 100vw; height: 100vh; height: 100dvh; padding: 16px 22px 24px; overflow: auto; background: #f7fbfe; }
+    .journey-viewer:fullscreen::backdrop { background: #f7fbfe; }
+    .journey-viewer:fullscreen .journey-layer-toolbar, .journey-viewer.is-expanded .journey-layer-toolbar { position: sticky; top: 0; z-index: 10; margin-top: 0; box-shadow: 0 3px 12px rgba(39,89,123,.08); }
+    .journey-viewer:fullscreen .journey-map, .journey-viewer.is-expanded .journey-map { margin: 12px 0 0; }
+    body.journey-overlay-open { overflow: hidden; }
+    @media (max-width: 760px) { .journey-viewer:fullscreen, .journey-viewer.is-expanded { padding: 8px; } }
+    .journey-layer-hidden { display: none !important; }
+    .journey-map { margin: 18px 0 25px; overflow: hidden; border: 1px solid #dbe8f2; border-radius: 13px; background: #fff; }
+    .journey-scroll { overflow-x: auto; overscroll-behavior-x: contain; }
+    .journey-board { position: relative; min-width: 1420px; --journey-label: 146px; --journey-step: calc((100% - var(--journey-label))/8); }
+    .journey-row { display: grid; grid-template-columns: var(--journey-label) repeat(8,minmax(118px,1fr)); }
+    .journey-row + .journey-row { border-top: 1px solid #e6eef4; }
+    .journey-cell { min-height: 84px; padding: 13px 14px; border-left: 1px solid #e6eef4; background: #fff; font-size: 11px; line-height: 1.6; }
+    .journey-cell:first-child { border-left: 0; background: #f5f9fc; color: #38566d; font-weight: 720; }
+    .journey-cell small { display: block; margin-top: 4px; color: #8293a3; font-size: 10px; font-weight: 500; }
+    .journey-row.head .journey-cell { min-height: 88px; background: #eef6ff; color: #355675; font-weight: 720; }
+    .journey-row.head .journey-cell:first-child { background: #e8f2fb; }
+    .journey-row.phase .journey-cell { min-height: 64px; display: flex; flex-direction: column; justify-content: center; }
+    .journey-row .span-2 { grid-column: span 2; }
+    .journey-row.phase .stage-tone-1 { background: #e8f1ff; box-shadow: inset 0 4px 0 #5b8ee4; color: #315f9e; }
+    .journey-row.phase .stage-tone-2 { background: #e8f8f7; box-shadow: inset 0 4px 0 #2e9b96; color: #26746f; }
+    .journey-row.phase .stage-tone-3 { background: #f0f7e9; box-shadow: inset 0 4px 0 #7b9f55; color: #587736; }
+    .journey-row.phase .stage-tone-4 { background: #f3eef9; box-shadow: inset 0 4px 0 #8a70b5; color: #654f8a; }
+    .journey-row.phase .stage-tone-5 { background: #fff4e5; box-shadow: inset 0 4px 0 #d08a2f; color: #8b5e20; }
+    .journey-row.phase .stage-tone-6 { background: #edf1fb; box-shadow: inset 0 4px 0 #687fb9; color: #4c6095; }
+    .journey-row.substage .stage-tone-1 { background: #f4f8ff; }
+    .journey-row.substage .stage-tone-2 { background: #f1fbfa; }
+    .journey-row.substage .stage-tone-3 { background: #f7faf2; }
+    .journey-row.substage .stage-tone-4 { background: #faf7fd; }
+    .journey-row.substage .stage-tone-5 { background: #fffbf4; }
+    .journey-row.substage .stage-tone-6 { background: #f6f8fd; }
+    .journey-row:not(.phase) > :nth-child(4), .journey-row:not(.phase) > :nth-child(6), .journey-row:not(.phase) > :nth-child(8) { border-left: 2px solid #c9d9e6; }
+    .journey-cell strong { display: block; margin-bottom: 4px; color: #29475d; }
+    .journey-band { display: flex; justify-content: space-between; gap: 14px; padding: 8px 14px; border-top: 1px solid #dbe8f2; border-bottom: 1px solid #e6eef4; background: #eff6fc; color: #58748a; font-size: 10px; }
+    .journey-band strong { font-size: 11px; }
+    .journey-flow { position: relative; isolation: isolate; padding: 38px 0 42px; background: #fff; }
+    .journey-role { height: 108px; }
+    .journey-role > div { position: relative; display: flex; align-items: center; justify-content: center; border-right: 1px solid #edf2f6; border-bottom: 1px solid #edf2f6; }
+    .journey-role > .journey-role-label { z-index: 4; align-items: flex-start; flex-direction: column; padding: 13px 14px; background: #f5f9fc; }
+    .journey-role-label strong { color: #38566d; font-size: 11px; }
+    .journey-role-label strong::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: var(--role-color); }
+    .journey-role-label small { margin-top: 4px; color: #8595a4; font-size: 9px; line-height: 1.45; }
+    .journey-role.user { --role-color: #2867b2; }
+    .journey-role.role-a { --role-color: #198a79; }
+    .journey-role.role-b { --role-color: #5b78a2; }
+    .journey-node { position: relative; z-index: 4; width: calc(100% - 36px); min-height: 60px; padding: 9px 10px; border: 1px solid #d3e2ed; border-left: 3px solid var(--role-color); border-radius: 8px; background: #fbfdff; box-shadow: 0 2px 5px rgba(35,78,118,.04); color: #536d82; font-size: 10px; line-height: 1.5; }
+    .journey-node strong { display: block; margin-bottom: 3px; color: #294d68; font-size: 11px; }
+    .journey-node .action-id { display: inline-block; margin-right: 5px; padding: 1px 5px; border-radius: 4px; color: #426982; background: #e9f2f8; font-size: 8px; font-weight: 750; vertical-align: 1px; }
+    .journey-node.decision { border-style: dashed; }
+    .journey-empty { color: #9ba8b4; font-size: 11px; }
+    .journey-edges { position: absolute; z-index: 3; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+    .journey-edges > .edge { fill: none; stroke: #7092ae; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .journey-edges > .edge.return { stroke: #aa741b; stroke-dasharray: 6 5; }
+    .journey-edges > .join { stroke: #5e87a7; stroke-width: 4; }
+    .journey-edge-label { fill: #607b90; font-size: 9px; }
+    .journey-edge-label.return { fill: #95671d; }
+    .journey-label-bg { fill: #fff; stroke: #e0e9f0; stroke-width: 1; }
+    .journey-flow-note { position: absolute; z-index: 4; left: calc(var(--journey-label) + 15px); bottom: 12px; color: #8798a6; font-size: 9px; }
+    .journey-row.thought .journey-cell:not(:first-child) { background: #fcfdff; color: #516d83; font-style: italic; }
+    .journey-row.pain .journey-cell:not(:first-child) { background: #fffaf2; }
+    .journey-row.need .journey-cell:not(:first-child) { background: #f2faf8; color: #28725f; }
+    .journey-row.idea .journey-cell:not(:first-child) { background: #f4fbeb; color: #28725f; }
+    .journey-row.evidence .journey-cell:not(:first-child) { background: #f7faff; color: #4c6980; }
+    .journey-row.optional .journey-cell { min-height: 66px; }
+    .journey-row.optional .journey-wide { grid-column: 2 / 10; display: flex; align-items: center; justify-content: center; text-align: center; color: #71879a; background: #fbfdff; }
+    .journey-handoffs { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 9px; padding: 13px; border-top: 1px solid #dbe8f2; background: #f7faff; }
+    .journey-handoffs div { padding: 10px 11px; border-left: 3px solid #afc7d9; background: #fff; color: #688094; font-size: 10px; line-height: 1.55; }
+    .journey-handoffs strong { display: block; margin-bottom: 4px; color: #365a73; font-size: 10px; }
+    .ia-diagram { margin: 18px 0 24px; padding: 22px; border: 1px solid #dceaf3; border-radius: 14px; background: linear-gradient(145deg,#f8fbff,#f5fcfa); }
+    .ia-root { width: fit-content; margin: 0 auto 22px; padding: 11px 24px; border-radius: 10px; color: #fff; background: linear-gradient(105deg,#285ed6,#168fca); font-weight: 720; box-shadow: 0 8px 18px rgba(40,94,214,.14); }
+    .ia-branches { position: relative; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+    .ia-branches::before { content: ""; position: absolute; left: 16%; right: 16%; top: -12px; border-top: 1px solid #a8c9df; }
+    .ia-node { position: relative; padding: 16px; border: 1px solid #d6e6f2; border-radius: 11px; background: #fff; }
+    .ia-node::before { content: ""; position: absolute; left: 50%; top: -13px; height: 13px; border-left: 1px solid #a8c9df; }
+    .ia-node strong { display: block; margin-bottom: 8px; color: #29485f; font-size: 13px; }
+    .ia-node span { display: block; margin-top: 5px; color: #71879a; font-size: 11px; }
+    .process-map { margin: 16px 0 26px; padding: 20px; border: 1px solid #d9e8f4; border-radius: 14px; background: #fbfdff; }
+    .process-boundary { margin-bottom: 18px; color: #567087; font-size: 12px; }
+    .process-flow { overflow-x: auto; padding-bottom: 5px; }
+    .process-grid { position: relative; display: grid; grid-template-columns: 96px repeat(var(--process-cols), minmax(190px,1fr)); gap: 16px 42px; align-items: start; min-width: max(100%, var(--process-min-width, 780px)); padding: 8px 12px 70px; }
+    .process-links { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+    .process-links > path { fill: none; stroke: #6b9fc7; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .process-links > path.return { stroke: #c18a2a; stroke-width: 1.6; stroke-dasharray: 5 4; }
+    .process-role { position: relative; z-index: 1; display: grid; place-items: center; align-self: stretch; justify-self: stretch; min-height: 112px; padding: 12px; border: 1px solid #cfe2f2; border-radius: 10px; background: #eaf3fb; color: #315f83; font-size: 12px; font-weight: 750; line-height: 1.4; text-align: center; }
+    .process-role.collaborator { border-color: #c9e8dd; background: #eaf8f2; color: #257263; }
+    .process-cell { position: relative; z-index: 1; min-width: 0; align-self: start; }
+    .process-cell.empty { min-height: 1px; }
+    .process-node { min-width: 0; padding: 14px 16px; border: 1px solid #cfe0ee; border-radius: 10px; background: #eef6ff; color: #426078; font-size: 12px; line-height: 1.6; }
+    .process-cell.collaborator .process-node { background: #f1fbf6; border-color: #cee9dd; }
+    .process-node strong { display: block; margin-bottom: 5px; color: #24537c; font-size: 13px; }
+    .process-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 7px; }
+    .process-meta span { padding: 2px 7px; border-radius: 5px; background: #dceaf8; color: #3d6484; font-size: 10px; }
+    .process-branch { margin-top: 10px; padding: 10px 12px; border-left: 3px solid #d69a2d; border-radius: 0 7px 7px 0; background: #fff8ec; color: #725b3a; }
+    .process-branch strong { display: inline; margin: 0; color: #8a621c; font-size: 11px; }
+    .process-branch span { display: block; margin-top: 3px; }
+    .process-branch em { display: block; margin-top: 4px; color: #9a6e25; font-style: normal; font-weight: 700; }
+    .wireframe-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; margin: 16px 0 26px; }
+    .wireframe { overflow: hidden; border: 1px solid #d8e5ee; border-radius: 12px; background: #fff; box-shadow: 0 8px 22px rgba(35,78,118,.05); }
+    .wf-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid #e4edf3; background: #f5f8fb; color: #36536a; font-size: 11px; font-weight: 720; }
+    .wf-body { min-height: 190px; padding: 12px; }
+    .wf-toolbar { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+    .wf-search,.wf-button,.wf-field { border: 1px solid #d8e4ed; border-radius: 6px; background: #fff; color: #6b8092; font-size: 9px; }
+    .wf-search { flex: 1; padding: 6px 8px; }
+    .wf-button { padding: 6px 9px; color: #fff; background: #2f72d3; border-color: #2f72d3; }
+    .wf-row { display: grid; grid-template-columns: 1.35fr .85fr .7fr; gap: 6px; padding: 8px; border-top: 1px solid #edf2f5; color: #667d90; font-size: 8px; }
+    .wf-row:first-child { border-top: 0; background: #f3f7fa; color: #3f5c73; font-weight: 700; }
+    .wf-stepper { display: flex; gap: 5px; margin-bottom: 12px; }
+    .wf-stepper span { flex: 1; height: 5px; border-radius: 4px; background: #dbe7ef; }
+    .wf-stepper span.active { background: #2e73d5; }
+    .wf-field { margin: 8px 0; padding: 8px; }
+    @media (max-width: 900px) { .journey-context { grid-template-columns: 1fr 1fr; } .journey-context > div:nth-child(3) { border-left: 0; border-top: 1px solid #e6eef4; } .journey-context > div:nth-child(4) { border-top: 1px solid #e6eef4; } }
+    @media (max-width: 760px) { .journey-context { grid-template-columns: 1fr; } .journey-context > div { border-left: 0; border-top: 1px solid #e6eef4; } .journey-context > div:first-child { border-top: 0; } .journey-handoffs { grid-template-columns: 1fr; } }
+    @media (max-width: 760px) { .ia-branches,.wireframe-grid { grid-template-columns: 1fr; } .ia-branches::before,.ia-node::before { display: none; } .ia-root { margin-left: 0; } .process-map { padding: 14px; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand" aria-label="交互设计需求分析"><svg class="brand-icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="42" height="36" viewBox="0 0 42 36"><defs><clipPath id="master_svg0_8422_49330"><rect x="0" y="0" width="42" height="36" rx="0"/></clipPath><radialGradient cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" id="master_svg1_8422_49325" gradientTransform="translate(-0.07116696671499767 44.355906586442416) rotate(4.018079206090022) scale(45.560096623877236 40.227234645117754)"><stop offset="0%" stop-color="#51B371" stop-opacity="0.800000011920929"/><stop offset="86.00000143051147%" stop-color="#51B371" stop-opacity="1"/></radialGradient><radialGradient cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" id="master_svg2_8422_49326" gradientTransform="translate(44.52418233404933 34.188163791983015) rotate(175.8804120754111) scale(41.17411291933297 36.35462907579893)"><stop offset="0%" stop-color="#1771E6" stop-opacity="0.6000000238418579"/><stop offset="93.00000071525574%" stop-color="#1771E6" stop-opacity="1"/></radialGradient></defs><g clip-path="url(#master_svg0_8422_49330)"><g><g><g><g><g><g></g></g><g><g></g></g></g></g><g transform="matrix(0.9348095059394836,-0.355149507522583,0.355149507522583,0.9348095059394836,-4.390490939978378,2.274467603619428)"><g transform="matrix(0.9991084337234497,-0.042217496782541275,0.042217496782541275,0.9991084337234497,-0.975619080529178,0.18953917472975945)"><g><path d="M29.65051573562622,26.271552860717772C17.23631573562622,21.640162860717773,7.4867657356262205,22.648954860717772,4.759134735626221,26.557802860717775C3.8639107356262206,27.841012860717775,3.8271927356262205,30.786462860717773,4.302780735626221,32.17233286071777C5.042385735626221,34.33402286071777,6.88703573562622,35.64092286071777,9.96961573562622,36.22132286071778C20.42901573562622,38.110622860717775,28.77281573562622,34.971722860717776,28.94941573562622,34.908522860717774C30.48281573562622,34.34192286071777,32.53731573562622,32.98174286071777,33.138815735626224,31.897922860717774C33.66331573562622,30.942422860717773,33.87661573562622,29.813202860717773,33.350315735626225,28.918902860717772Q32.35891573562622,27.229022860717773,29.65051573562622,26.273522860717772L29.65051573562622,26.271552860717772Z" fill-rule="evenodd" fill="url(#master_svg1_8422_49325)" fill-opacity="1"/></g></g><g><g><path d="M8.70725873562622,18.85323298461914C8.184462735626221,19.74753298461914,8.39777755562622,20.87872298461914,8.92581973562622,21.830272984619143C9.52554573562622,22.91409298461914,11.58176573562622,24.27235298461914,13.12043573562622,24.834952984619143C13.295285735626221,24.90015298461914,21.64426573562622,28.02325298461914,32.09846573562622,26.114252984619142C35.18106573562622,25.52985298461914,37.02396573562622,24.22095298461914,37.761865735626216,22.05927298461914C38.23566573562622,20.66946298461914,38.193665735626226,17.72401298461914,37.296765735626224,16.44277298461914C34.56206573562622,12.53787698461914,24.81606573562622,11.548822984619141,12.405305735626222,16.20193298461914Q9.69864573562622,17.161372984619142,8.70725873562622,18.85520298461914L8.70725873562622,18.85323298461914Z" fill-rule="evenodd" fill="url(#master_svg2_8422_49326)" fill-opacity="1"/></g></g></g></g></g></g></svg><span class="brand-name">交互设计分析</span></div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-content">
+        <div class="hero-kicker">INTERACTION DESIGN ANALYSIS</div>
+        <h1 id="page-title">[项目名称] 交互设计需求分析</h1>
+        <p class="hero-subtitle">业务背景 → 用户任务 → 设计方案 → 可验证结果</p>
+        <p class="hero-intro">[用一小段话交代业务背景与本期希望达成的业务结果。只有影响方案成立的关键前提，才在这里补一句说明。]</p>
+        <div class="meta-list"><span class="meta-pill"><strong>版本</strong> V1.0</span><span class="meta-pill"><strong>更新</strong> 2026.09.22</span><span class="meta-pill"><strong>项目</strong> [产品 / 模块]</span><span class="meta-pill"><strong>状态</strong> 评审中</span></div>
+      </div>
+      <svg class="hero-decoration" viewBox="0 0 310 190" fill="none" aria-hidden="true">
+        <g stroke="#173e63" stroke-width="1.5">
+          <rect x="22" y="26" width="106" height="68" rx="10"/><path d="M22 43h106"/><circle cx="34" cy="35" r="2" fill="#173e63"/><circle cx="42" cy="35" r="2" fill="#173e63"/><path d="M39 57h50M39 68h70M39 79h38"/>
+          <rect x="180" y="91" width="108" height="70" rx="10"/><path d="M180 108h108"/><path d="M195 123h47M195 135h75M195 147h42"/>
+          <path d="M128 59h40c18 0 23 8 23 22v10" stroke-dasharray="4 5"/><path d="m186 84 5 7 5-7"/>
+          <circle cx="153" cy="139" r="23"/><circle cx="153" cy="139" r="7"/><path d="M153 116v-14M153 176v-14M130 139h-14M190 139h-14"/>
+          <path d="M69 94v28c0 11 8 17 18 17h42" stroke-dasharray="4 5"/><path d="m122 134 7 5-7 5"/>
+          <path d="M235 58 217 38l-8 42 13-10 10 18 10-6-11-18 16-2Z" fill="#173e63" stroke="none"/>
+        </g>
+      </svg>
+    </section>
+
+    <div class="body-grid">
+      <aside class="sidebar" aria-label="文档目录">
+        <div class="sidebar-title">设计叙事 · CONTENTS</div>
+        <nav class="toc" id="toc">
+          <a href="#business"><span>01</span>业务背景与目标</a>
+          <a href="#jobs"><span>02</span>用户任务与体验</a>
+          <a href="#benchmark"><span>03</span>竞品参考与取舍</a>
+          <a href="#solution"><span>04</span>整体方案与范围</a>
+          <a href="#pages"><span>05</span>流程、页面与交互</a>
+          <a href="#states"><span>06</span>状态与异常恢复</a>
+          <a href="#decisions"><span>07</span>待决策事项</a>
+          <a href="#validation"><span>08</span>设计验收与验证</a>
+          <a href="#guide"><span>09</span>附录与使用说明</a>
+        </nav>
+        <div class="sidebar-note">本模板完整展示飞书分析框架的必需、条件必需与可选维度。用于真实项目时，再按证据裁剪未触发的内容。</div>
+      </aside>
+
+      <main class="document" id="main-content">
+        <section class="chapter" id="business">
+          <div class="chapter-head"><span class="chapter-index">01</span><div><h2>业务背景与业务目标</h2><p class="chapter-desc">交代需求产生的业务语境，再说明本期希望达成的结果。</p></div></div>
+          <p><strong>业务背景：</strong>[哪类客户或项目处于什么业务情境、需要完成什么任务，现有产品或交付方式是什么；若有证据支持的障碍，简述其影响。不要把推测的情绪、频次或损失写成事实。]</p>
+          <p><strong>业务目标：</strong>[本期要让目标对象发生什么可观察的业务变化，首期用什么场景验证结果；说明对现状依赖或负担的改善，不把页面、控件或功能清单当作目标。无可靠基线时不编目标数值。]</p>
+          <p class="evidence-line"><span class="source-tag">来源</span>[PRD / 访谈 / 现网数据及日期]　<span class="source-tag unknown">待确认</span>[如果关键前提尚未确认，写明核查动作]</p>
+          <h3>版本定位与关键前提 <span class="chip gray">条件必需</span></h3>
+          <p>[存在替代、迁移或多版本关系时，说明本期与已有版本的关系；如果某个全局前提会影响任务是否成立，在此提前说明。]</p>
+          <h3>业务驱动与价值 <span class="chip gray">可选</span></h3>
+          <p>[只有市场、政策、竞争、产品战略／OKR 或商业价值确实解释优先级与方案取舍时，才记录相应证据。若需求明确承接战略或 OKR，提炼其方向、本需求如何承接，并标注来源；不自行推断 KR、指标或收益。无依据时删除本节；定量目标须有基线。]</p>
+          <div class="callout green"><strong class="callout-title">开篇只保留关键结论</strong><p>不要在此重复角色、范围、页面清单或待决策大表；这些内容会在后文随任务和方案展开。</p></div>
+        </section>
+
+        <section class="chapter" id="jobs">
+          <div class="chapter-head"><span class="chapter-index">02</span><div><h2>用户任务与目标体验</h2><p class="chapter-desc">明确谁在什么场景下完成什么任务，以及完成的标志。</p></div></div>
+          <p><strong>关键角色：</strong>[主要执行者]负责[任务动作]；[协作角色]在[触发条件]下接收[交接物 / 结果]。岗位归属没有证据时标为待确认。</p>
+          <p><strong>目标客户特征：</strong>[行业、规模等画像仅在影响任务或设计时填写；无依据时不编造。] <span class="chip gray">可选</span></p>
+          <div class="job-box"><div class="job-caption">JOB 01 · 结果导向的任务</div><p>[用户角色]需要在[业务场景]下，完成[任务]，以达成[可观察的业务结果]。</p></div>
+          <p>每个 Case 按“体验目标 → 设计重点 → 设计目标”呈现。写目标前先校准 JOB：任务是否支持用户在具体情境中取得进步，范围是否适合本期；再从用户为取得进步而追求的体验中，选出与业务结果直接相关的诉求。这是编写前的检查，不是要写进目标正文的措辞。体验目标按“情境与任务 → 可观察的业务结果 → 角色的体验变化”合写，不提前写设计手段；有现状证据时，保留“从现状负担转向目标体验”，没有证据时只写期望改善。设计目标按“关键环节 → 针对设计重点的设计策略 → 判断、行动或结果理解 → 明确的体验品质”书写，说明通过怎样的信息组织、判断前置、引导、反馈或交接来改善体验，而非只写抽象机制名称；具体页面与交互规则在后文展开。检查体验品质是否可衡量、是否形成有价值的差异、是否符合产品价值主张并照顾用户情感因素；缺证据时不编造优势或数值。完成标识和验证方法在后文展开。</p>
+          <div class="section-rule"></div>
+          <div class="case-block">
+            <div class="case-head"><span class="case-no">CASE 01</span><h3>[具体情境下的任务场景]</h3></div>
+            <p>[在什么情境下，完成什么任务。一个 Case 对应一种触发条件、协作路径或完成结果；不要把连续步骤拆成多个 Case。]</p>
+            <div class="case-facts"><div><strong>起点 / 前提</strong>[用户已有的条件与信息]</div><div><strong>参与与交接</strong>[角色、交接物及接收方]</div><div><strong>完成标识</strong>[可以观察到的真实结果]</div></div>
+            <div class="goal-chain" aria-label="本 Case 的目标推导">
+              <div class="info-card blue"><div class="card-topline"></div><h4>体验目标</h4><p>让[业务对象／用户]在[具体情境]下完成[本 Case 的任务]，取得[可观察的业务结果]；同时使[关键角色]从[有证据的现状负担]转向[其追求的目标体验]。<br><small>没有现状证据时，改写为期望获得的目标体验，不虚构“从……到……”。</small></p></div>
+              <div class="goal-bridge"><span><strong>目标诉求 → 设计重点：</strong>[为同时实现上述业务结果和用户体验，设计最需要解决的关键问题]</span></div>
+              <div class="info-card green"><div class="card-topline"></div><h4>设计目标</h4><p>在[任务的关键环节]，通过[具体设计策略：如何组织信息、引导操作或反馈结果]，让[角色]能够[作出关键判断／完成行动／理解结果]，获得[明确的体验品质]。</p></div>
+            </div>
+            <div class="callout blue"><strong class="callout-title">模板填写规则 · 衡量标准</strong><p>只有指标口径、测量方式和目标值都有可靠依据时，才在上方设计目标卡片中补充“衡量标准”，并注明统计周期。缺少任一项时，报告中省略整行，不显示“XX”“待定”等占位内容。</p></div>
+          </div>
+          <h3>现状断点与目标体验</h3>
+          <div class="two-col"><div class="info-card blue"><div class="card-topline"></div><h4>现状 · AS-IS</h4><p>[用户当前路径、关键断点与来源。未知的现状不要补成想象中的流程。]</p></div><div class="info-card green"><div class="card-topline"></div><h4>目标 · TO-BE</h4><p>[用户任务会如何推进，在哪个环节得到反馈、交接或恢复支持。]</p></div></div>
+          <h3>现有环境与迁移约束 <span class="chip gray">条件必需</span></h3>
+          <p>[现有系统、资源、术语、操作习惯、协作方式和迁移约束，只有会改变任务或设计时才展开；注明来源和受影响的 Case。]</p>
+          <h3>Case 阶段与角色交接</h3>
+          <div class="stage-grid"><div class="stage"><strong>阶段 01 · 准备</strong><p>[执行角色的动作与判断]</p><em>[现状断点 / 目标体验]</em></div><div class="stage"><strong>阶段 02 · 完成任务</strong><p>[关键操作与系统反馈]</p><em>[设计策略与待验证点]</em></div><div class="stage"><strong>阶段 03 · 交接 / 结果</strong><p>[交接给谁、交接什么]</p><em>[可观察的完成标识]</em></div></div>
+          <p class="evidence-line"><span class="source-tag">现状证据</span>[来源]　<span class="source-tag design">目标方案</span>[设计判断]　<span class="source-tag unknown">未知</span>[需验证的环节]</p>
+          <h3>完整现状旅程 <span class="chip gray">条件必需</span></h3>
+          <p>[任务跨阶段、角色或触点并存在交接断点时使用。一个旅程围绕一个 Case；阶段与存在的子阶段横向排列，体验维度和参与角色纵向排列。同一阶段可包含多个动作，使用 A1、A2……保持“所做—所想—痛点—需求—点子—证据”的追踪关系。生成真实项目文档时替换方括号内容，并删除不适用的可选行。]</p>
+          <div class="journey-context" aria-label="旅程上下文">
+            <div><strong>产品 / 模块 · 核心用户</strong>[产品名称 / 模块名称]<br>[核心用户，以及希望完成的业务任务与最终结果]</div>
+            <div><strong>其他目标用户 · 场景 / 覆盖范围</strong>[其他目标用户]<br>[Case 场景] · [覆盖阶段或任务范围]</div>
+            <div><strong>起止边界 · 地图性质 / 证据状态</strong>[起点或前提] → [可观察的完成标识]<br>[现状还原 / 推断草案 / 已研究验证] · [来源或待采证方式]</div>
+            <div><strong>参与角色 / 阅读规则</strong>[核心用户、协作角色 A、协作角色 B……]<br>[同列表示同一阶段；A1/A2 为动作编号；连接线表示依赖或交接]</div>
+          </div>
+          <div class="journey-legend" aria-label="旅程连线图例"><span><i></i>交接 / 依赖 →</span><span><i class="branch"></i>并行分叉 / 汇合</span><span><i class="return"></i>异常返回</span></div>
+          <div class="journey-viewer" data-journey-viewer role="region" aria-label="现状用户旅程全屏阅读区">
+          <div class="journey-layer-toolbar" data-journey-controls data-target="journey-board" role="group" aria-label="选择旅程图中显示的内容层">
+            <button type="button" class="journey-fullscreen-button" data-journey-fullscreen aria-pressed="false">全屏查看</button>
+            <strong>显示内容</strong>
+            <label><input type="checkbox" data-layer-toggle="doing" checked>所做</label>
+            <label><input type="checkbox" data-layer-toggle="thinking" checked>所说 / 所想</label>
+            <label><input type="checkbox" data-layer-toggle="emotion" checked>情绪曲线</label>
+            <label><input type="checkbox" data-layer-toggle="pain" checked>痛点</label>
+            <label><input type="checkbox" data-layer-toggle="need" checked>需求</label>
+            <label><input type="checkbox" data-layer-toggle="idea" checked>点子</label>
+          </div>
+          <div class="journey-map" aria-label="完整现状用户旅程模板">
+            <div class="journey-scroll" role="region" aria-label="阶段为横轴，体验维度和角色为纵轴；窄屏可左右滚动" tabindex="0">
+              <div class="journey-board" id="journey-board">
+                <div class="journey-row head phase"><div class="journey-cell">阶段 →<small>分组表头，不等同于一个动作列</small></div><div class="journey-cell span-2 stage-tone-1">01 [阶段名称]<small>[阶段目标 / 关键结果]</small></div><div class="journey-cell span-2 stage-tone-2">02 [阶段名称]<small>[阶段目标 / 关键结果]</small></div><div class="journey-cell span-2 stage-tone-3">03 [阶段名称]<small>[阶段目标 / 关键结果]</small></div><div class="journey-cell span-2 stage-tone-4">04 [阶段名称]<small>[阶段目标 / 关键结果]</small></div></div>
+                <div class="journey-row head substage"><div class="journey-cell">子阶段 / 动作列 →<small>下方所有内容按最小动作列对齐</small></div><div class="journey-cell stage-tone-1">1.1 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div><div class="journey-cell stage-tone-1">1.2 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div><div class="journey-cell stage-tone-2">2.1 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div><div class="journey-cell stage-tone-2">2.2 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div><div class="journey-cell stage-tone-3">3.1 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div><div class="journey-cell stage-tone-3">3.2 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div><div class="journey-cell stage-tone-4">4.1 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div><div class="journey-cell stage-tone-4">4.2 [子阶段 / 动作步骤]<small>[触发 / 触点 / 可见反馈]</small></div></div>
+                <div class="journey-band" data-journey-layer="doing"><strong>多角色协作泳道 / 用户所做</strong><span>[同一阶段允许多个动作卡；每个动作使用稳定编号；交接、依赖和异常由连接线表达]</span></div>
+                <div class="journey-flow" id="journey-flow" data-journey-layer="doing">
+                  <svg class="journey-edges" id="journey-edges" aria-hidden="true"></svg>
+                  <div class="journey-row journey-role user"><div class="journey-role-label"><strong>[核心用户]</strong><small>[旅程的主要体验主体]</small></div><div><div class="journey-node" id="ju1"><strong><span class="action-id">A1</span>[用户动作 / 判断]</strong>[输入 / 输出 / 完成标识]</div></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><div class="journey-node decision" id="ju4"><strong><span class="action-id">A6</span>[用户确认 / 决策]</strong>[完成或进入异常恢复]</div></div></div>
+                  <div class="journey-row journey-role role-a"><div class="journey-role-label"><strong>[协作角色 A]</strong><small>[职责或可见边界]</small></div><div><span class="journey-empty">—</span></div><div><div class="journey-node" id="ja2"><strong><span class="action-id">A2</span>[接收 / 核对 / 处理]</strong>[接手条件与输出]</div></div><div><span class="journey-empty">—</span></div><div><div class="journey-node" id="ja3"><strong><span class="action-id">A4</span>[汇合后的协作动作]</strong>[交付物或反馈]</div></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div></div>
+                  <div class="journey-row journey-role role-b"><div class="journey-role-label"><strong>[协作角色 B]</strong><small>[职责或可见边界]</small></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><div class="journey-node" id="jb2"><strong><span class="action-id">A3</span>[并行协作动作]</strong>[输入、判断与输出]</div></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div><div><div class="journey-node" id="jb3"><strong><span class="action-id">A5</span>[处理 / 交付]</strong>[结果与接手条件]</div></div><div><span class="journey-empty">—</span></div><div><span class="journey-empty">—</span></div></div>
+                  <div class="journey-flow-note">[只连接实际依赖、交接与反馈；无动作单元格使用“—”]</div>
+                </div>
+                <div class="journey-row thought" data-journey-layer="thinking"><div class="journey-cell">所说所想 / 疑问<small>逐动作列对齐；原话、观察或明确标注的推断</small></div><div class="journey-cell">[A1 · 有证据的用户原话 / 疑问]</div><div class="journey-cell">[A2 · 有证据的用户原话 / 疑问]</div><div class="journey-cell">[A3 · 有证据的用户原话 / 疑问]</div><div class="journey-cell">[A4 · 有证据的用户原话 / 疑问]</div><div class="journey-cell">[A5 · 有证据的用户原话 / 疑问]</div><div class="journey-cell">[A6 · 有证据的用户原话 / 疑问]</div><div class="journey-cell">[A7 · 无证据时标推断或删除]</div><div class="journey-cell">[A8 · 无证据时标推断或删除]</div></div>
+                <div class="journey-row optional" data-journey-layer="emotion"><div class="journey-cell">情绪走势（可选）<small>以动作节点采样，仅展示有来源的研究结果</small></div><div class="journey-cell journey-wide">[仅在有访谈、观察或测量证据时，按 A1、A2……绘制情绪走势并注明来源、尺度和样本；否则删除本行]</div></div>
+                <div class="journey-row pain" data-journey-layer="pain"><div class="journey-cell">现状断点 / 关键时刻<small>逐动作列对齐；有证据的阻碍与影响</small></div><div class="journey-cell"><strong>[A1 · 阻碍或不确定性]</strong>[影响]</div><div class="journey-cell"><strong>[A2 · 阻碍或不确定性]</strong>[影响]</div><div class="journey-cell"><strong>[A3 · 阻碍或不确定性]</strong>[影响]</div><div class="journey-cell"><strong>[A4 · 阻碍或不确定性]</strong>[影响]</div><div class="journey-cell"><strong>[A5 · 阻碍或不确定性]</strong>[影响]</div><div class="journey-cell"><strong>[A6 · 阻碍或不确定性]</strong>[影响]</div><div class="journey-cell"><strong>[A7 · 阻碍或不确定性]</strong>[影响]</div><div class="journey-cell"><strong>[A8 · 阻碍或不确定性]</strong>[影响]</div></div>
+                <div class="journey-row need" data-journey-layer="need"><div class="journey-cell">用户需求<small>从对应动作与痛点推导的能力或结果</small></div><div class="journey-cell"><strong>[A1 · 用户需要一种方式来……]</strong>[以便……]</div><div class="journey-cell"><strong>[A2 · 用户需要一种方式来……]</strong>[以便……]</div><div class="journey-cell"><strong>[A3 · 用户需要一种方式来……]</strong>[以便……]</div><div class="journey-cell"><strong>[A4 · 用户需要一种方式来……]</strong>[以便……]</div><div class="journey-cell"><strong>[A5 · 用户需要一种方式来……]</strong>[以便……]</div><div class="journey-cell"><strong>[A6 · 用户需要一种方式来……]</strong>[以便……]</div><div class="journey-cell"><strong>[A7 · 用户需要一种方式来……]</strong>[以便……]</div><div class="journey-cell"><strong>[A8 · 用户需要一种方式来……]</strong>[以便……]</div></div>
+                <div class="journey-row idea" data-journey-layer="idea"><div class="journey-cell">设计点子 / 优先级 / 责任<small>逐需求对齐的方案假设</small></div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A1 / 需求] · [责任待确认]</div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A2 / 需求] · [责任待确认]</div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A3 / 需求] · [责任待确认]</div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A4 / 需求] · [责任待确认]</div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A5 / 需求] · [责任待确认]</div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A6 / 需求] · [责任待确认]</div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A7 / 需求] · [责任待确认]</div><div class="journey-cell"><strong>[点子 · 优先级或待评估]</strong>[对应 A8 / 需求] · [责任待确认]</div></div>
+                <div class="journey-row evidence"><div class="journey-cell">衡量与证据<small>逐动作或需求对齐；指标口径与采证方式</small></div><div class="journey-cell"><strong>[A1 · 指标及口径]</strong>[证据 / 待采证]</div><div class="journey-cell"><strong>[A2 · 指标及口径]</strong>[证据 / 待采证]</div><div class="journey-cell"><strong>[A3 · 指标及口径]</strong>[证据 / 待采证]</div><div class="journey-cell"><strong>[A4 · 指标及口径]</strong>[证据 / 待采证]</div><div class="journey-cell"><strong>[A5 · 指标及口径]</strong>[证据 / 待采证]</div><div class="journey-cell"><strong>[A6 · 指标及口径]</strong>[证据 / 待采证]</div><div class="journey-cell"><strong>[A7 · 指标及口径]</strong>[证据 / 待采证]</div><div class="journey-cell"><strong>[A8 · 指标及口径]</strong>[证据 / 待采证]</div></div>
+              </div>
+            </div>
+            <div class="journey-handoffs"><div><strong>[H1 · 发起角色 → 接收角色]</strong>[交付物] · [接手条件] · [信息不足或失败时如何处理]</div><div><strong>[H2 · 并行角色 → 后续角色]</strong>[并行输出] · [汇合条件] · [进入下一阶段的判定]</div><div><strong>[H3 · 结果角色 → 主要用户]</strong>[结果反馈] · [用户确认方式] · [异常返回阶段与恢复动作]</div></div>
+          </div>
+          </div>
+          <h3>异常 Case <span class="chip gray">条件必需</span></h3>
+          <p>[当异常改变触发条件、角色协作或完成结果时，单独写明异常 Case 的起点、路径、交接物和完成标识；不要仅在状态表增加一行。]</p>
+          <h3>研究测量 <span class="chip gray">可选</span></h3>
+          <p>[只有存在访谈或测量证据时，才呈现情绪、耗时和满意度；记录样本、时间与口径。]</p>
+        </section>
+
+        <section class="chapter" id="benchmark">
+          <div class="chapter-head"><span class="chapter-index">03</span><div><h2>竞品参考与设计取舍 <span class="chip gray">条件必需</span></h2><p class="chapter-desc">有重要未知项或明确研究要求时，比较同一任务的真实体验证据。</p></div></div>
+          <p><strong>研究问题：</strong>[什么设计决定需要借助竞品或现状替代方案判断；明确比较的任务、角色与完成标准。]</p>
+          <div class="table-wrap"><table><thead><tr><th>参考对象与条件</th><th>同任务操作／反馈／交接／恢复证据</th><th>差异原因与适用条件</th><th>对本方案的启发</th></tr></thead><tbody><tr><td>[产品 / 版本 / 角色]</td><td>[实际观察与来源；未核查写未核查]</td><td>[为什么不同、何时适用]</td><td>[可借鉴或不采用的理由]</td></tr></tbody></table></div>
+          <p><strong>我方取舍与验证：</strong>[采用什么设计处理，怎样在页面、流程或规则中落地，又如何验证。竞品的能力说明不能直接证明易用性，也不能自动转成本期范围。]</p>
+          <p class="evidence-line"><span class="source-tag">附录</span>完整操作记录和截图集可放在末尾；正文保留影响设计决定的证据与结论。</p>
+        </section>
+
+        <section class="chapter" id="solution">
+          <div class="chapter-head"><span class="chapter-index">04</span><div><h2>本期整体方案与范围</h2><p class="chapter-desc">先给出方案结论，再说明覆盖的任务、入口与边界。</p></div></div>
+          <p class="lead">[本期采用什么整体方案支持 JOB 01 / CASE 01；哪些对象、页面或协作环节会改变。]</p>
+          <div class="scope-row"><div class="scope-name">任务覆盖</div><div class="scope-detail">[本期覆盖的用户任务与 Case，不按功能按钮罗列。]</div></div>
+          <div class="scope-row"><div class="scope-name">设计覆盖</div><div class="scope-detail">[所涉及的信息架构、入口、页面、状态与反馈。]</div></div>
+          <div class="scope-row"><div class="scope-name">非范围</div><div class="scope-detail">[容易误解但本期明确不处理的任务；没有明确边界时不虚构。]</div></div>
+          <h3>信息架构与入口</h3>
+          <div class="ia-diagram" role="img" aria-label="信息架构与入口示例">
+            <div class="ia-root">[产品 / 平台]</div>
+            <div class="ia-branches">
+              <div class="ia-node"><strong>[现有相关入口]</strong>[承担的既有任务]<span>[需要继承或保持的模式]</span></div>
+              <div class="ia-node"><strong>[本期推荐入口]</strong>[列表 → 操作 → 详情 / 结果]<span>[本期覆盖的用户任务]</span></div>
+              <div class="ia-node"><strong>[协作方 / 外部触点]</strong>[接收、处理或验证结果]<span>[跨角色或跨系统交接]</span></div>
+            </div>
+          </div>
+          <div class="two-col"><div class="info-card blue"><div class="card-topline"></div><h4>入口及归属</h4><p>[现有平台证据支持的入口 / 若证据不足，列出候选与成立条件。]</p></div><div class="info-card green"><div class="card-topline"></div><h4>核心对象关系</h4><p>[用户理解任务必需的对象、归属与引用关系；复杂关系用结构图或关系图。]</p></div></div>
+          <h3>对象关系与非范围 <span class="chip gray">条件必需</span></h3>
+          <p>[多对象的归属、引用或映射会影响理解时，用关系图呈现；容易被误解为本期内容的非范围要明确说明，不为不确定事项编造边界。]</p>
+          <h3>落地障碍与分期 <span class="chip gray">条件必需</span></h3>
+          <div class="table-wrap"><table><thead><tr><th>落地障碍</th><th>受影响任务</th><th>设计处理</th><th>剩余限制</th></tr></thead><tbody><tr><td>[有证据的障碍]</td><td>[JOB / Case]</td><td>[页面或协作如何处理]</td><td>[仍无法解决的部分]</td></tr></tbody></table></div>
+          <p>[只有分期会改变操作或协作方式时，说明本期如何完成任务、哪些环节仍需人工处理、后续版本会改变什么。]</p>
+          <div class="callout"><strong class="callout-title">方案取舍</strong><p>[如果存在两种合理入口或载体，说明选择依据、代价和验证方式。没有方案分歧时删除此提示块。]</p></div>
+        </section>
+
+        <section class="chapter" id="pages">
+          <div class="chapter-head"><span class="chapter-index">05</span><div><h2>核心流程、页面与交互</h2><p class="chapter-desc">旅程讲协作，页面流程讲跳转；每个页面讲信息优先级和反馈。</p></div></div>
+          <p>按实际任务决定横向步骤数量：入口或页面变化、用户关键判断、跨角色交接和结果状态需要单独表达时才拆分；同一页面中的普通字段操作不拆成节点。按实际参与角色增减泳道，同一步骤由哪个角色执行，就放在哪一行；节点间用有向连线表达主路径与交接，失败返回用虚线回到目标节点。失败路径放在触发它的步骤内，写清条件、反馈、下一步与返回位置；不另设统一失败泳道。以下节点仅示意结构，真实项目可增减。</p>
+          <h3>CASE 01 的页面流程</h3>
+          <div class="process-map" aria-label="页面流程与嵌入式失败分支示例">
+            <div class="process-boundary"><strong>流程边界：</strong>[写明 Case 的起点与真实完成标识，避免把中间页面成功当成任务完成。]</div>
+            <div class="process-flow"><div class="process-grid" style="--process-cols:3; --process-min-width:900px">
+              <svg class="process-links" aria-hidden="true"></svg>
+              <div class="process-role">[主要执行者]</div>
+              <div class="process-cell" data-step="1"><div class="process-node"><div class="process-meta"><span>[入口页面]</span></div><strong>01 · [读取任务上下文]</strong>[作出开始任务所需的判断。]</div></div>
+              <div class="process-cell" data-step="2"><div class="process-node"><div class="process-meta"><span>[操作页面]</span></div><strong>02 · [完成关键选择与校验]</strong>[形成必要的判断或状态变化。]<div class="process-branch" data-return-step="2"><strong>校验失败：</strong><span>[指出原因并保留输入。]</span><em>修正后返回 → 步骤 02</em></div></div></div>
+              <div class="process-cell empty"></div>
+              <div class="process-role collaborator">[接收角色]</div><div class="process-cell empty"></div><div class="process-cell empty"></div>
+              <div class="process-cell collaborator" data-step="3"><div class="process-node"><div class="process-meta"><span>[结果页面 / 交接点]</span></div><strong>03 · [核对真实完成结果]</strong>[接收交接物并确认可观察结果。]<div class="process-branch" data-return-step="2"><strong>结果未知：</strong><span>[先查询最新状态，不直接重复提交。]</span><em>状态明确后 → 完成或返回步骤 02</em></div></div></div>
+            </div></div>
+          </div>
+          <h3>页面职责与信息优先级</h3>
+          <p>本表只维护载体、用户判断和优先信息。决定下一步的操作反馈应写入上方触发它的流程节点，避免同一规则在表格与流程中重复维护；跨页面共性状态规则放入第 06 章。</p>
+          <div class="table-wrap"><table><thead><tr><th>载体</th><th>用户要判断什么</th><th>优先展示</th></tr></thead><tbody><tr><td>[入口页 / 区域]</td><td>[是否开始此任务]</td><td>[任务上下文、状态]</td></tr><tr><td>[操作页 / 弹窗]</td><td>[如何正确完成]</td><td>[必要字段、约束]</td></tr><tr><td>[结果页 / 详情]</td><td>[任务是否真实完成]</td><td>[结果、下一步、交接物]</td></tr></tbody></table></div>
+          <h3>关键文案 <span class="chip gray">条件必需</span></h3>
+          <p>[只记录需要评审的具体界面用语；触发条件、用户下一步与返回位置以对应流程节点为准，不在此重复维护操作规则。]</p>
+          <div class="table-wrap"><table><thead><tr><th>文案场景</th><th>建议文案 / 信息</th><th>核查点</th></tr></thead><tbody><tr><td>[校验失败]</td><td>[指出具体字段、原因和修正方式]</td><td>[是否准确且可理解]</td></tr><tr><td>[结果反馈]</td><td>[说明是否真正完成及交接结果]</td><td>[是否与真实状态一致]</td></tr></tbody></table></div>
+          <h3>页面线框 <span class="chip gray">交付模式包含线框时必需</span></h3>
+          <p>[在对应页面职责下插入完整画布；图承载布局、信息优先级和关键区域，文字说明交互规则。没有平台证据时，不把候选入口画成既定事实。]</p>
+          <div class="wireframe-grid" aria-label="页面线框展示示例">
+            <div class="wireframe"><div class="wf-head"><span>[页面 A · 列表 / 入口]</span><span>低保真线框</span></div><div class="wf-body"><div class="wf-toolbar"><span class="wf-search">[搜索 / 筛选]</span><span class="wf-button">[主操作]</span></div><div class="wf-row"><span>[核心对象]</span><span>[状态]</span><span>[操作]</span></div><div class="wf-row"><span>[列表信息]</span><span>[正常 / 异常]</span><span>[查看]</span></div><div class="wf-row"><span>[列表信息]</span><span>[处理中]</span><span>[继续]</span></div></div></div>
+            <div class="wireframe"><div class="wf-head"><span>[页面 B · 表单 / 详情]</span><span>低保真线框</span></div><div class="wf-body"><div class="wf-stepper"><span class="active"></span><span></span><span></span></div><div class="wf-field">[必要字段与说明]</div><div class="wf-field">[选择项与不可选原因]</div><div class="wf-field">[确认信息、反馈与返回路径]</div></div></div>
+          </div>
+        </section>
+
+        <section class="chapter" id="states">
+          <div class="chapter-head"><span class="chapter-index">06</span><div><h2>状态、权限与异常恢复</h2><p class="chapter-desc">说明用户看到什么、能做什么、失败后怎样继续。</p></div></div>
+          <div class="table-wrap"><table><thead><tr><th>情境 / 状态</th><th>用户可见影响</th><th>可执行操作</th><th>反馈与恢复</th></tr></thead><tbody><tr><td>[加载 / 空态]</td><td>[当前是否有结果]</td><td>[等待 / 创建 / 返回]</td><td>[解释下一步]</td></tr><tr><td>[校验失败]</td><td>[具体字段与原因]</td><td>[修正并重试]</td><td>[保留已输入内容]</td></tr><tr><td>[提交失败 / 超时]</td><td>[是否已生效、是否可重试]</td><td>[查询结果 / 重试 / 返回]</td><td>[避免重复操作的提示]</td></tr><tr><td>[权限不足]</td><td>[不可见或不可操作的范围]</td><td>[申请权限 / 返回]</td><td>[前后端规则一致]</td></tr></tbody></table></div>
+          <h3>高影响操作与权限边界</h3><p>[只有输入中存在敏感数据、不可逆动作或角色差异时展开：谁可发起、确认什么、结果如何通知、误操作如何恢复。]</p>
+          <h3>并发冲突与安全约束 <span class="chip gray">条件必需</span></h3>
+          <p>[如果多人同时修改、状态过期或安全合规限制会改变交互，说明用户可见影响、允许操作、反馈和恢复方式；不在正文展开底层算法。]</p>
+          <p><strong>跨页面规则：</strong>[共用的状态、权限和异常恢复规则在这里集中维护；简单需求则并入对应页面。]</p>
+          <div class="callout amber"><strong class="callout-title">异常 Case 的判断</strong><p>如果异常会改变触发条件、角色协作或完成结果，应回到“用户任务与体验”新增独立 Case；不能只在状态表里补一行。</p></div>
+        </section>
+
+        <section class="chapter" id="decisions">
+          <div class="chapter-head"><span class="chapter-index">07</span><div><h2>待决策事项 <span class="chip gray">条件必需</span></h2><p class="chapter-desc">读者理解方案之后，再讨论会改变方案的未决问题。</p></div></div>
+          <p>[没有会改变任务、页面、状态、权限或范围的未决问题时，删除本章和目录项。]</p>
+          <div class="table-wrap"><table><thead><tr><th>问题</th><th>影响的位置</th><th>当前建议 / 假设</th><th>确认依据与参与角色</th><th>确认前处理</th></tr></thead><tbody><tr><td>[待决策问题]</td><td>[JOB / Case / 页面 / 状态]</td><td>[可逆假设或推荐方案]</td><td>[资料、演示或评审角色]</td><td>[暂按什么规则设计]</td></tr></tbody></table></div>
+          <p class="evidence-line"><span class="source-tag unknown">注意</span>影响前文理解的假设，仍需在对应段落就地标注，并引用此处；不要把未知规则写成已确认事实。</p>
+        </section>
+
+        <section class="chapter" id="validation">
+          <div class="chapter-head"><span class="chapter-index">08</span><div><h2>设计验收与价值验证</h2><p class="chapter-desc">把关联业务结果的体验目标、设计目标和 Case 完成标识连到可观察结果。</p></div></div>
+          <div class="track" aria-label="设计追踪链"><span>体验目标</span><b>→</b><span>设计目标</span><b>→</b><span>CASE 01</span><b>→</b><span>设计策略</span><b>→</b><span>页面 / 验收</span></div>
+          <ul class="check-list"><li><strong>Case 完成性：</strong>[从指定起点出发，用户能完成真实任务，并得到可观察的完成标识。]</li><li><strong>设计目标：</strong>[验证关键设计策略是否帮助角色获得目标体验；说明观察方式。]</li><li><strong>业务目标：</strong>[业务结果由什么数据或业务验证，设计原型能验证到哪一步。]</li><li><strong>异常与权限：</strong>[当风险触发时，用户知道发生什么、能做什么、如何恢复。]</li></ul>
+          <h3>指标、收益基线与测量 <span class="chip gray">有可靠数据时可选</span></h3>
+          <div class="table-wrap"><table><thead><tr><th>指标 / 观察项</th><th>基线与来源</th><th>测量方式</th><th>设计可验证的部分</th></tr></thead><tbody><tr><td>[业务指标或任务观察项]</td><td>[可靠基线 / 暂无基线]</td><td>[试点、上线数据或任务观察]</td><td>[原型能验证到的阶段]</td></tr></tbody></table></div>
+          <div class="callout green"><strong class="callout-title">验证边界</strong><p>原型可验证理解、判断和交互路径；真实业务结果需在上线或试点后观察。没有可靠基线时，不填写想象中的效率或收益数字。</p></div>
+        </section>
+
+        <section class="chapter" id="guide">
+          <div class="chapter-head"><span class="chapter-index">09</span><div><h2>附录与使用说明</h2><p class="chapter-desc">框架全部维度都在本模板展开；真实项目依证据裁剪。</p></div></div>
+          <ol><li>先替换方括号内容，把已确认事实、设计决策、推断、待确认和非范围分开。</li><li>删除未触发的条件章节、空表和示例提示；同步更新左侧目录。</li><li>一个主题只维护一组结论：旅程说明协作，页面流程说明页面跳转，验收引用 Case 完成标识。</li><li>关键结论附近保留来源；没有实际需求与平台证据时，入口、权限、字段和组件只能作为候选。</li></ol>
+          <h3>来源与证据标记 <span class="chip green">必需</span></h3>
+          <p>关键结论旁标注来源，并区分已确认事实、设计决策、设计推断、待确认和非范围。竞品操作记录、截图集、详细追踪及辅助技术资料可以放在附录；正文保留足以支撑设计取舍的证据。</p>
+          <h3>图表与飞书组件的选择</h3>
+          <div class="table-wrap"><table><thead><tr><th>表达对象</th><th>合适形式</th><th>检查重点</th></tr></thead><tbody><tr><td>多字段映射</td><td>飞书原生表格 / HTML 表格</td><td>单元格有实际内容、说明列可读</td></tr><tr><td>阶段交接、分支与恢复</td><td>可编辑白板 / 流程图</td><td>角色、交接物、返回路径清楚</td></tr><tr><td>层级与对象关系</td><td>结构图 / 关系图</td><td>归属、引用、映射语义明确</td></tr><tr><td>已确认页面布局</td><td>页面线框</td><td>完整画布、信息层级、关键操作</td></tr><tr><td>简单线性说明</td><td>短段落</td><td>不为凑图重复表达</td></tr></tbody></table></div>
+          <h3>条件内容的裁剪规则</h3>
+          <ul><li><strong>竞品：</strong>只有用户明确要求，或重要未知项与风险影响设计决定时保留；研究问题、操作证据、差异原因、我方取舍和验证必须成链。</li><li><strong>旅程与异常 Case：</strong>跨阶段、角色、触点且存在交接断点时保留旅程；异常改变协作路径或完成结果时单列 Case。</li><li><strong>客户特征、落地障碍、分期与收益：</strong>仅在有证据且影响设计或验证时保留；不编造收益和未来能力。</li><li><strong>待决策：</strong>只有未决问题会改变当前方案时保留。需要读者提前知道的关键前提应在相关位置就地标注。</li></ul>
+          <h3>交付前检查</h3>
+          <p>[核对章节顺序、目录锚点、来源、条件模块、空表与重复结论；若转换为飞书原生文档，再检查表格宽度、白板可编辑性、图片比例和实际预览。]</p>
+          <div class="example-note">这份文件是 HTML 阅读模板，不是飞书原生组件文档。若实际交付目标是飞书，应把相同设计结论转换为飞书段落、表格、白板和线框，并在写入后回读检查。</div>
+        </section>
+        <footer class="footer"><span>交互设计需求分析 · 业务目标 / 用户任务 / 可验证结果</span><span>模板示例 · 2026.09.22</span></footer>
+      </main>
+    </div>
+  </div>
+  <button class="back-top" id="back-top" type="button" aria-label="返回顶部" title="返回顶部">↑</button>
+  <script>
+    (() => {
+      const links = [...document.querySelectorAll('#toc a')];
+      const sections = links.map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+      const backTop = document.getElementById('back-top');
+      const update = () => {
+        let current = sections[0];
+        for (const section of sections) if (section.getBoundingClientRect().top <= 140) current = section;
+        links.forEach(link => { const active = link.getAttribute('href') === '#' + current.id; link.classList.toggle('active', active); if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current'); });
+        backTop.classList.toggle('show', window.scrollY > 450);
+      };
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+      backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }));
+    })();
+    (() => {
+      document.querySelectorAll('[data-journey-viewer]').forEach(viewer => {
+        const button = viewer.querySelector('[data-journey-fullscreen]');
+        if (!button) return;
+        const sync = () => {
+          const active = document.fullscreenElement === viewer || viewer.classList.contains('is-expanded');
+          button.textContent = active ? '退出全屏' : '全屏查看';
+          button.setAttribute('aria-pressed', String(active));
+          requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+        };
+        const closeFallback = () => {
+          viewer.classList.remove('is-expanded');
+          document.body.classList.remove('journey-overlay-open');
+          sync();
+        };
+        button.addEventListener('click', async () => {
+          if (document.fullscreenElement === viewer) {
+            await document.exitFullscreen();
+          } else if (viewer.classList.contains('is-expanded')) {
+            closeFallback();
+          } else {
+            try {
+              if (!viewer.requestFullscreen) throw new Error('fullscreen unavailable');
+              await viewer.requestFullscreen();
+            } catch (_) {
+              viewer.classList.add('is-expanded');
+              document.body.classList.add('journey-overlay-open');
+            }
+          }
+          sync();
+        });
+        document.addEventListener('fullscreenchange', sync);
+        document.addEventListener('keydown', event => {
+          if (event.key === 'Escape' && viewer.classList.contains('is-expanded')) closeFallback();
+        });
+        sync();
+      });
+    })();
+    (() => {
+      document.querySelectorAll('[data-journey-controls]').forEach(toolbar => {
+        const board = document.getElementById(toolbar.dataset.target);
+        if (!board) return;
+        const apply = input => {
+          const layer = input.dataset.layerToggle;
+          const targets = board.querySelectorAll(`[data-journey-layer="${layer}"]`);
+          targets.forEach(target => target.classList.toggle('journey-layer-hidden', !input.checked));
+          input.closest('label').hidden = targets.length === 0;
+        };
+        toolbar.querySelectorAll('[data-layer-toggle]').forEach(input => {
+          input.addEventListener('change', () => apply(input));
+          apply(input);
+        });
+      });
+    })();
+    (() => {
+      const flow = document.getElementById('journey-flow');
+      const svg = document.getElementById('journey-edges');
+      if (!flow || !svg) return;
+      const ns = 'http://www.w3.org/2000/svg';
+      const make = (tag, attrs, text) => { const node = document.createElementNS(ns, tag); Object.entries(attrs || {}).forEach(([key, value]) => node.setAttribute(key, value)); if (text) node.textContent = text; return node; };
+      const box = id => { const rect = document.getElementById(id).getBoundingClientRect(); const base = flow.getBoundingClientRect(); return { l: rect.left - base.left, r: rect.right - base.left, t: rect.top - base.top, b: rect.bottom - base.top, x: rect.left - base.left + rect.width / 2, y: rect.top - base.top + rect.height / 2 }; };
+      const draw = () => {
+        const width = flow.clientWidth, height = flow.clientHeight;
+        svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        svg.replaceChildren();
+        const defs = make('defs');
+        [['journey-arrow','#7092ae'],['journey-return-arrow','#aa741b']].forEach(([id,color]) => { const marker = make('marker',{ id, viewBox:'0 0 10 10', refX:9, refY:5, markerWidth:5, markerHeight:5, orient:'auto' }); marker.appendChild(make('path',{ d:'M0 0 L10 5 L0 10Z', fill:color })); defs.appendChild(marker); });
+        svg.appendChild(defs);
+        const edge = (points, kind = 'edge', arrow = true) => { const path = make('path',{ d:points.map((point,index) => `${index ? 'L' : 'M'} ${point[0]} ${point[1]}`).join(' '), class:kind }); if (arrow) path.setAttribute('marker-end',`url(#${kind.includes('return') ? 'journey-return-arrow' : 'journey-arrow'})`); svg.appendChild(path); };
+        const label = (x,y,text,isReturn = false) => { const labelWidth = Math.max(86,text.length * 9 + 14); svg.appendChild(make('rect',{ x:x-labelWidth/2, y:y-9, width:labelWidth, height:18, rx:4, class:'journey-label-bg' })); svg.appendChild(make('text',{ x, y:y+3, 'text-anchor':'middle', class:`journey-edge-label${isReturn ? ' return' : ''}` },text)); };
+        const u1 = box('ju1'), u4 = box('ju4'), a2 = box('ja2'), a3 = box('ja3'), b2 = box('jb2'), b3 = box('jb3');
+        const handoffX = (u1.r + a2.l) / 2;
+        edge([[u1.r,u1.y],[handoffX,u1.y],[handoffX,a2.y],[a2.l,a2.y]]);
+        label(handoffX - 4,(u1.y+a2.y)/2,'[H1 · 交接物]');
+        const forkX = (a2.r + b2.l) / 2;
+        edge([[a2.r,a2.y],[forkX,a2.y]],'edge',false);
+        svg.appendChild(make('line',{ x1:forkX,y1:a2.y-6,x2:forkX,y2:b2.y+6,class:'join' }));
+        edge([[forkX,b2.y],[b2.l,b2.y]]);
+        const joinX = (b2.r + a3.l) / 2;
+        edge([[b2.r,b2.y],[joinX,b2.y]],'edge',false);
+        edge([[joinX,b2.y],[joinX,a3.y],[a3.l,a3.y]]);
+        const relayX = (a3.r + b3.l) / 2;
+        edge([[a3.r,a3.y],[relayX,a3.y],[relayX,b3.y],[b3.l,b3.y]]);
+        const resultX = (b3.r + u4.l) / 2;
+        edge([[b3.r,b3.y],[resultX,b3.y],[resultX,u4.y],[u4.l,u4.y]]);
+        label(resultX - 4,(b3.y+u4.y)/2,'[H3 · 结果反馈]');
+        const railY = 18, returnX = a2.x;
+        edge([[u4.x,u4.t],[u4.x,railY],[returnX,railY],[returnX,a2.t-12],[a2.x,a2.t-12],[a2.x,a2.t]],'edge return');
+        label((u4.x + returnX) / 2,railY,'[异常触发 → 返回阶段 / 恢复动作]',true);
+      };
+      new ResizeObserver(draw).observe(flow);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw); else draw();
+    })();
+    (() => {
+      const ns = 'http://www.w3.org/2000/svg';
+      document.querySelectorAll('.process-grid').forEach((grid, gridIndex) => {
+        const svg = grid.querySelector('.process-links');
+        if (!svg) return;
+        const make = (tag, attrs) => {
+          const node = document.createElementNS(ns, tag);
+          Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+          return node;
+        };
+        const draw = () => {
+          const base = grid.getBoundingClientRect();
+          const width = grid.clientWidth, height = grid.clientHeight;
+          svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+          svg.replaceChildren();
+          const defs = make('defs', {});
+          [['main', '#6b9fc7'], ['return', '#c18a2a']].forEach(([kind, color]) => {
+            const marker = make('marker', { id: `process-${kind}-${gridIndex}`, viewBox: '0 0 10 10', refX: '9', refY: '5', markerWidth: '6', markerHeight: '6', orient: 'auto' });
+            marker.appendChild(make('path', { d: 'M0 0 L10 5 L0 10Z', fill: color }));
+            defs.appendChild(marker);
+          });
+          svg.appendChild(defs);
+          const box = element => {
+            const r = element.getBoundingClientRect();
+            return { l: r.left - base.left, r: r.right - base.left, t: r.top - base.top, b: r.bottom - base.top, w: r.width, h: r.height };
+          };
+          const cells = [...grid.querySelectorAll('.process-cell[data-step]')].sort((a, b) => Number(a.dataset.step) - Number(b.dataset.step));
+          const byStep = new Map(cells.map(cell => [Number(cell.dataset.step), cell]));
+          cells.slice(0, -1).forEach((cell, index) => {
+            const from = box(cell), to = box(cells[index + 1]);
+            const x1 = from.r + 4, y1 = from.t + Math.min(from.h / 2, 62);
+            const x2 = to.l - 7, y2 = to.t + Math.min(to.h / 2, 62);
+            const middle = (x1 + x2) / 2;
+            const d = Math.abs(y1 - y2) < 6 ? `M ${x1} ${y1} L ${x2} ${y2}` : `M ${x1} ${y1} H ${middle} V ${y2} H ${x2}`;
+            svg.appendChild(make('path', { d, 'marker-end': `url(#process-main-${gridIndex})` }));
+          });
+          let returnIndex = 0;
+          grid.querySelectorAll('.process-branch[data-return-step]').forEach(branch => {
+            const source = branch.closest('.process-cell[data-step]');
+            const target = byStep.get(Number(branch.dataset.returnStep));
+            if (!source || !target || Number(target.dataset.step) >= Number(source.dataset.step)) return;
+            const from = box(branch), sourceBox = box(source), to = box(target);
+            const x1 = from.l - 4, y1 = from.t + from.h / 2;
+            const routeX = sourceBox.l - 16;
+            const railY = height - 17 - (returnIndex++ % 5) * 8;
+            const targetX = to.l + to.w / 2, targetY = to.b + 5;
+            const d = `M ${x1} ${y1} H ${routeX} V ${railY} H ${targetX} V ${targetY}`;
+            svg.appendChild(make('path', { d, class: 'return', 'marker-end': `url(#process-return-${gridIndex})` }));
+          });
+        };
+        new ResizeObserver(draw).observe(grid);
+        window.addEventListener('resize', draw);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw); else draw();
+      });
+    })();
+  </script>
+</body>
+</html>
