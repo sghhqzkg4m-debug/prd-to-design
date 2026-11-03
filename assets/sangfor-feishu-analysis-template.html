@@ -376,6 +376,28 @@
     @media (max-width: 900px) { .journey-context { grid-template-columns: 1fr 1fr; } .journey-context > div:nth-child(3) { border-left: 0; border-top: 1px solid #e6eef4; } .journey-context > div:nth-child(4) { border-top: 1px solid #e6eef4; } }
     @media (max-width: 760px) { .journey-context { grid-template-columns: 1fr; } .journey-context > div { border-left: 0; border-top: 1px solid #e6eef4; } .journey-context > div:first-child { border-top: 0; } .journey-handoffs { grid-template-columns: 1fr; } }
     @media (max-width: 760px) { .ia-branches,.wireframe-grid { grid-template-columns: 1fr; } .ia-branches::before,.ia-node::before { display: none; } .ia-root { margin-left: 0; } .process-map { padding: 14px; } }
+
+    /* Shared journey reading rows: status badges and action references. */
+    .journey-row.thought .journey-cell:not(:first-child) { font-style: normal; color: #607b90; background: #fbfdff; }
+    .journey-row.pain .journey-cell:not(:first-child) { color: #806b65; background: #fff8f7; }
+    .journey-row.pain .journey-cell.is-critical { border-left: 3px solid #ef7867; background: #fff3ef; }
+    .journey-row.need .journey-cell:not(:first-child) { color: #356a89; background: #f4fbff; }
+    .journey-row.idea .journey-cell:not(:first-child) { color: #286d62; background: #f3fcf9; }
+    .journey-row.evidence .journey-cell:not(:first-child) { color: #7a90a4; background: #fbfdff; }
+    .journey-inline-id { margin-right: 4px; color: #315f7c; font-size: 9px; font-weight: 750; }
+    .journey-badge { display: inline-block; margin-right: 5px; padding: 1px 5px; border-radius: 4px; font-size: 9px; font-weight: 700; line-height: 1.6; vertical-align: 1px; white-space: nowrap; }
+    .journey-badge.inferred, .journey-badge.pending { color: #a66d19; background: #fff2d9; }
+    .journey-badge.material { color: #008c79; background: #dcf8ee; }
+    .journey-badge.high { color: #d05942; background: #ffe8e2; }
+    .journey-badge.medium { color: #008b76; background: #e0f8f0; }
+    .journey-badge.low { color: #49718a; background: #eaf2f8; }
+    .journey-idea-title { margin-bottom: 7px; color: #286d62; font-weight: 700; }
+    .journey-idea-title + small { color: #8ba1b0; font-size: 9px; }
+    .journey-opportunity-priority { display: inline-block; min-width: 44px; text-align: center; }
+
+    .journey-row.target-experience .journey-cell:not(:first-child) { background: #f5fcf8; color: #527b68; }
+    .journey-row.target-design .journey-cell:not(:first-child) { background: #f4fbff; color: #356b8d; }
+    .journey-row.target-metrics .journey-cell:not(:first-child) { background: #fbfdff; color: #7b94aa; }
   </style>
 </head>
 <body>
@@ -464,117 +486,171 @@
           <h3>完整用户旅程 <span class="chip gray">条件必需</span></h3>
           <p>[任务跨阶段、角色或触点并存在交接断点时使用。一个旅程围绕一个 Case；阶段与存在的子阶段横向排列，体验维度和参与角色纵向排列。同一阶段可包含多个动作，使用 A1、A2……保持“所做—所想—痛点—需求—点子—证据”的追踪关系。生成真实项目文档时替换方括号内容，并删除不适用的可选行。]</p>
           <h4>[Case 名称]</h4><div class="journey-context">
-<div><strong>产品 / 模块 · 核心用户</strong>[产品、模块、核心用户及任务]</div>
-<div><strong>其他目标用户 · 场景 / 覆盖范围</strong>[其他角色、场景与覆盖范围]</div>
-<div><strong>起止边界 · 地图性质 / 证据状态</strong>[起点、完成结果、地图性质与证据]</div>
-<div><strong>参与角色 / 阅读规则</strong>[参与角色、动作对齐与交接规则]</div>
+<div><strong>产品 / 模块 · 核心用户</strong>[产品 / 模块；核心用户及其目标]</div>
+<div><strong>其他目标用户 · 场景 / 覆盖范围</strong>[其他参与角色、具体场景及覆盖范围]</div>
+<div><strong>起止边界 · 地图性质 / 证据状态</strong>[任务起点、真实完成标识与证据边界]</div>
+<div><strong>参与角色 / 阅读规则</strong>[角色定义；实线为依赖或交接，虚线为失败返回]</div>
 </div><div class="journey-legend"><span><i></i>交接 / 依赖 →</span><span><i class="return"></i>异常返回</span></div>
-<div class="journey-viewer" data-journey-viewer data-journey-component="1" role="region" aria-label="[Case 名称]旅程"><div class="journey-layer-toolbar" data-journey-controls data-target="template-journey-board" role="group" aria-label="选择旅程内容层"><button type="button" class="journey-fullscreen-button" data-journey-fullscreen aria-pressed="false">全屏查看</button><strong>显示内容</strong>
+<div class="journey-viewer" data-journey-viewer data-journey-component="1" data-journey-type="current" role="region" aria-label="[Case 名称] · 现状旅程旅程"><div class="journey-layer-toolbar" data-journey-controls data-target="case-template-board" role="group" aria-label="选择旅程内容层"><button type="button" class="journey-fullscreen-button" data-journey-fullscreen aria-pressed="false">全屏查看</button><strong>显示内容</strong>
 <label><input type="checkbox" data-layer-toggle="doing" checked>所做</label>
 <label><input type="checkbox" data-layer-toggle="thinking" checked>所说 / 所想</label>
 <label><input type="checkbox" data-layer-toggle="pain" checked>痛点</label>
 <label><input type="checkbox" data-layer-toggle="need" checked>需求</label>
 <label><input type="checkbox" data-layer-toggle="idea" checked>点子</label>
-</div><div class="journey-map"><div class="journey-scroll" tabindex="0" role="region" aria-label="阶段与动作横向排列，角色和体验维度纵向排列"><div class="journey-board" id="template-journey-board" data-action-count="8" style="--journey-cols:8"><div class="journey-row head phase"><div class="journey-cell">阶段 →<small>阶段宽度取决于动作数量</small></div>
-<div class="journey-cell stage-tone-1" style="grid-column:span 2">01 [阶段名称]<small>[阶段结果]</small></div>
-<div class="journey-cell stage-tone-2" style="grid-column:span 2">02 [阶段名称]<small>[阶段结果]</small></div>
-<div class="journey-cell stage-tone-3" style="grid-column:span 2">03 [阶段名称]<small>[阶段结果]</small></div>
-<div class="journey-cell stage-tone-4" style="grid-column:span 2">04 [阶段名称]<small>[阶段结果]</small></div>
+</div><div class="journey-map"><div class="journey-scroll" tabindex="0" role="region" aria-label="阶段与动作横向排列，角色和体验维度纵向排列"><div class="journey-board" id="case-template-board" data-action-count="6" style="--journey-cols:6"><div class="journey-row head phase"><div class="journey-cell">阶段 →<small>业务阶段 / 关键结果</small></div>
+<div class="journey-cell stage-tone-1" style="grid-column:span 2">[业务阶段]<small>[阶段关键结果]</small></div>
+<div class="journey-cell stage-tone-2" style="grid-column:span 2">[业务阶段]<small>[阶段关键结果]</small></div>
+<div class="journey-cell stage-tone-3" style="grid-column:span 2">[业务阶段]<small>[阶段关键结果]</small></div>
 </div><div class="journey-row head substage"><div class="journey-cell">动作列 →<small>动作、体验与证据逐列对齐</small></div>
-<div class="journey-cell stage-tone-1 ">A1 · [动作或判断]</div>
-<div class="journey-cell stage-tone-1 ">A2 · [动作或判断]</div>
-<div class="journey-cell stage-tone-2 phase-start">A3 · [动作或判断]</div>
-<div class="journey-cell stage-tone-2 ">A4 · [动作或判断]</div>
-<div class="journey-cell stage-tone-3 phase-start">A5 · [动作或判断]</div>
-<div class="journey-cell stage-tone-3 ">A6 · [动作或判断]</div>
-<div class="journey-cell stage-tone-4 phase-start">A7 · [动作或判断]</div>
-<div class="journey-cell stage-tone-4 ">A8 · [动作或判断]</div>
-</div><div class="journey-band" data-journey-layer="doing"><strong>多角色协作泳道 / 用户所做</strong><span>目标方案草案；现状证据见下方断点与证据行</span></div><div class="journey-flow" data-journey-layer="doing" data-journey-links="[{&quot;from&quot;: &quot;template-journey-A1&quot;, &quot;to&quot;: &quot;template-journey-A2&quot;, &quot;label&quot;: &quot;&quot;}, {&quot;from&quot;: &quot;template-journey-A2&quot;, &quot;to&quot;: &quot;template-journey-A3&quot;, &quot;label&quot;: &quot;[交接物]&quot;}, {&quot;from&quot;: &quot;template-journey-A3&quot;, &quot;to&quot;: &quot;template-journey-A4&quot;, &quot;label&quot;: &quot;&quot;}, {&quot;from&quot;: &quot;template-journey-A4&quot;, &quot;to&quot;: &quot;template-journey-A5&quot;, &quot;label&quot;: &quot;&quot;}, {&quot;from&quot;: &quot;template-journey-A5&quot;, &quot;to&quot;: &quot;template-journey-A6&quot;, &quot;label&quot;: &quot;&quot;}, {&quot;from&quot;: &quot;template-journey-A6&quot;, &quot;to&quot;: &quot;template-journey-A7&quot;, &quot;label&quot;: &quot;[交接物]&quot;}, {&quot;from&quot;: &quot;template-journey-A7&quot;, &quot;to&quot;: &quot;template-journey-A8&quot;, &quot;label&quot;: &quot;[交接物]&quot;}, {&quot;from&quot;: &quot;template-journey-A4&quot;, &quot;to&quot;: &quot;template-journey-A2&quot;, &quot;kind&quot;: &quot;return&quot;, &quot;label&quot;: &quot;[失败原因与返回]&quot;}, {&quot;from&quot;: &quot;template-journey-A6&quot;, &quot;to&quot;: &quot;template-journey-A5&quot;, &quot;kind&quot;: &quot;return&quot;, &quot;label&quot;: &quot;[失败原因与返回]&quot;}, {&quot;from&quot;: &quot;template-journey-A7&quot;, &quot;to&quot;: &quot;template-journey-A6&quot;, &quot;kind&quot;: &quot;return&quot;, &quot;label&quot;: &quot;[失败原因与返回]&quot;}]"><svg class="journey-edges" aria-hidden="true"></svg>
-<div class="journey-row journey-role user"><div class="journey-role-label"><strong>[核心用户]</strong><small>[职责]</small></div>
-<div class=""><div class="journey-node" id="template-journey-A1"><strong><span class="action-id">A1</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
-<div class=""><div class="journey-node" id="template-journey-A2"><strong><span class="action-id">A2</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
+<div class="journey-cell stage-tone-1 ">A1 · [动作名称]</div>
+<div class="journey-cell stage-tone-1 ">A2 · [动作名称]</div>
+<div class="journey-cell stage-tone-2 phase-start">A3 · [动作名称]</div>
+<div class="journey-cell stage-tone-2 ">A4 · [动作名称]</div>
+<div class="journey-cell stage-tone-3 phase-start">A5 · [动作名称]</div>
+<div class="journey-cell stage-tone-3 ">A6 · [动作名称]</div>
+</div><div class="journey-band" data-journey-layer="doing"><strong>多角色协作泳道 / 用户所做</strong><span>[现状旅程 / 事实与推断的证据状态]</span></div><div class="journey-flow" data-journey-layer="doing" data-journey-links="[{&quot;from&quot;: &quot;case-template-A1&quot;, &quot;to&quot;: &quot;case-template-A2&quot;, &quot;label&quot;: &quot;[交接物 / 接手条件]&quot;}, {&quot;from&quot;: &quot;case-template-A2&quot;, &quot;to&quot;: &quot;case-template-A3&quot;, &quot;label&quot;: &quot;[交接物 / 接手条件]&quot;}, {&quot;from&quot;: &quot;case-template-A3&quot;, &quot;to&quot;: &quot;case-template-A4&quot;, &quot;label&quot;: &quot;[交接物 / 接手条件]&quot;}, {&quot;from&quot;: &quot;case-template-A4&quot;, &quot;to&quot;: &quot;case-template-A5&quot;, &quot;label&quot;: &quot;[交接物 / 接手条件]&quot;}, {&quot;from&quot;: &quot;case-template-A5&quot;, &quot;to&quot;: &quot;case-template-A6&quot;, &quot;label&quot;: &quot;[交接物 / 接手条件]&quot;}, {&quot;from&quot;: &quot;case-template-A5&quot;, &quot;to&quot;: &quot;case-template-A3&quot;, &quot;label&quot;: &quot;[触发条件 → 恢复动作]&quot;, &quot;kind&quot;: &quot;return&quot;}]"><svg class="journey-edges" aria-hidden="true"></svg>
+<div class="journey-row journey-role user"><div class="journey-role-label"><strong>[执行角色]</strong><small>[角色职责 / 待确认]</small></div>
+<div class=""><div class="journey-node" id="case-template-A1"><strong><span class="action-id">A1</span>[动作名称]</strong>[动作、输入输出与用户可见反馈]</div></div>
+<div class=""><div class="journey-node" id="case-template-A2"><strong><span class="action-id">A2</span>[动作名称]</strong>[动作、输入输出与用户可见反馈]</div></div>
 <div class="phase-start"><span class="journey-empty">—</span></div>
 <div class=""><span class="journey-empty">—</span></div>
 <div class="phase-start"><span class="journey-empty">—</span></div>
 <div class=""><span class="journey-empty">—</span></div>
+</div>
+<div class="journey-row journey-role role-a"><div class="journey-role-label"><strong>[执行角色]</strong><small>[角色职责 / 待确认]</small></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class="phase-start"><div class="journey-node" id="case-template-A3"><strong><span class="action-id">A3</span>[动作名称]</strong>[动作、输入输出与用户可见反馈]</div></div>
+<div class=""><div class="journey-node" id="case-template-A4"><strong><span class="action-id">A4</span>[动作名称]</strong>[动作、输入输出与用户可见反馈]</div></div>
 <div class="phase-start"><span class="journey-empty">—</span></div>
 <div class=""><span class="journey-empty">—</span></div>
 </div>
-<div class="journey-row journey-role role-a"><div class="journey-role-label"><strong>[协作角色 A]</strong><small>[职责]</small></div>
-<div class=""><span class="journey-empty">—</span></div>
-<div class=""><span class="journey-empty">—</span></div>
-<div class="phase-start"><div class="journey-node" id="template-journey-A3"><strong><span class="action-id">A3</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
-<div class=""><div class="journey-node" id="template-journey-A4"><strong><span class="action-id">A4</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
-<div class="phase-start"><div class="journey-node" id="template-journey-A5"><strong><span class="action-id">A5</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
-<div class=""><div class="journey-node" id="template-journey-A6"><strong><span class="action-id">A6</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
-<div class="phase-start"><span class="journey-empty">—</span></div>
-<div class=""><div class="journey-node" id="template-journey-A8"><strong><span class="action-id">A8</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
-</div>
-<div class="journey-row journey-role role-b"><div class="journey-role-label"><strong>[协作角色 B]</strong><small>[职责]</small></div>
+<div class="journey-row journey-role role-b"><div class="journey-role-label"><strong>[执行角色]</strong><small>[角色职责 / 待确认]</small></div>
 <div class=""><span class="journey-empty">—</span></div>
 <div class=""><span class="journey-empty">—</span></div>
 <div class="phase-start"><span class="journey-empty">—</span></div>
 <div class=""><span class="journey-empty">—</span></div>
-<div class="phase-start"><span class="journey-empty">—</span></div>
-<div class=""><span class="journey-empty">—</span></div>
-<div class="phase-start"><div class="journey-node" id="template-journey-A7"><strong><span class="action-id">A7</span>[动作或判断]</strong>[输入、输出或完成标识]</div></div>
-<div class=""><span class="journey-empty">—</span></div>
+<div class="phase-start"><div class="journey-node" id="case-template-A5"><strong><span class="action-id">A5</span>[动作名称]</strong>[动作、输入输出与用户可见反馈]</div></div>
+<div class=""><div class="journey-node" id="case-template-A6"><strong><span class="action-id">A6</span>[动作名称]</strong>[动作、输入输出与用户可见反馈]</div></div>
 </div>
-<div class="journey-flow-note">实线为任务依赖与交接；虚线为失败返回。具体交接条件见图下说明。</div></div>
-<div class="journey-row thought" data-journey-layer="thinking"><div class="journey-cell">所说所想 / 疑问（推断）</div>
-<div class="journey-cell "><strong>A1</strong>[有证据的疑问或标注推断]</div>
-<div class="journey-cell "><strong>A2</strong>[有证据的疑问或标注推断]</div>
-<div class="journey-cell phase-start"><strong>A3</strong>[有证据的疑问或标注推断]</div>
-<div class="journey-cell "><strong>A4</strong>[有证据的疑问或标注推断]</div>
-<div class="journey-cell phase-start"><strong>A5</strong>[有证据的疑问或标注推断]</div>
-<div class="journey-cell "><strong>A6</strong>[有证据的疑问或标注推断]</div>
-<div class="journey-cell phase-start"><strong>A7</strong>[有证据的疑问或标注推断]</div>
-<div class="journey-cell "><strong>A8</strong>[有证据的疑问或标注推断]</div>
+<div class="journey-flow-note">实线为任务依赖与交接；虚线为失败返回。交接条件见图下说明。</div></div>
+<div class="journey-row thought" data-journey-layer="thinking"><div class="journey-cell">所说 / 所想<small>无访谈证据处标「推断」</small></div>
+<div class="journey-cell  " data-action-ref="A1"><span class="journey-badge inferred">推断</span>[有证据的用户疑问；无证据时明确标记推断]</div>
+<div class="journey-cell  " data-action-ref="A2"><span class="journey-badge inferred">推断</span>[有证据的用户疑问；无证据时明确标记推断]</div>
+<div class="journey-cell phase-start " data-action-ref="A3"><span class="journey-badge inferred">推断</span>[有证据的用户疑问；无证据时明确标记推断]</div>
+<div class="journey-cell  " data-action-ref="A4"><span class="journey-badge inferred">推断</span>[有证据的用户疑问；无证据时明确标记推断]</div>
+<div class="journey-cell phase-start " data-action-ref="A5"><span class="journey-badge inferred">推断</span>[有证据的用户疑问；无证据时明确标记推断]</div>
+<div class="journey-cell  " data-action-ref="A6"><span class="journey-badge inferred">推断</span>[有证据的用户疑问；无证据时明确标记推断]</div>
 </div>
-<div class="journey-row pain" data-journey-layer="pain"><div class="journey-cell">现状断点 / 关键时刻</div>
-<div class="journey-cell "><strong>A1</strong>[现状断点与证据边界]</div>
-<div class="journey-cell "><strong>A2</strong>[现状断点与证据边界]</div>
-<div class="journey-cell phase-start"><strong>A3</strong>[现状断点与证据边界]</div>
-<div class="journey-cell "><strong>A4</strong>[现状断点与证据边界]</div>
-<div class="journey-cell phase-start"><strong>A5</strong>[现状断点与证据边界]</div>
-<div class="journey-cell "><strong>A6</strong>[现状断点与证据边界]</div>
-<div class="journey-cell phase-start"><strong>A7</strong>[现状断点与证据边界]</div>
-<div class="journey-cell "><strong>A8</strong>[现状断点与证据边界]</div>
+<div class="journey-row pain" data-journey-layer="pain"><div class="journey-cell">现状断点<small>阻碍 / 负担 / 不确定性</small></div>
+<div class="journey-cell  " data-action-ref="A1"><span class="journey-badge pending">[证据状态]</span>[阻碍、负担或不确定性及其影响]</div>
+<div class="journey-cell  " data-action-ref="A2"><span class="journey-badge pending">[证据状态]</span>[阻碍、负担或不确定性及其影响]</div>
+<div class="journey-cell phase-start is-critical" data-action-ref="A3"><span class="journey-badge pending">[证据状态]</span>[阻碍、负担或不确定性及其影响]</div>
+<div class="journey-cell  " data-action-ref="A4"><span class="journey-badge pending">[证据状态]</span>[阻碍、负担或不确定性及其影响]</div>
+<div class="journey-cell phase-start " data-action-ref="A5"><span class="journey-badge pending">[证据状态]</span>[阻碍、负担或不确定性及其影响]</div>
+<div class="journey-cell  " data-action-ref="A6"><span class="journey-badge pending">[证据状态]</span>[阻碍、负担或不确定性及其影响]</div>
 </div>
-<div class="journey-row need" data-journey-layer="need"><div class="journey-cell">用户需求</div>
-<div class="journey-cell "><strong>A1</strong>[用户需要的结果]</div>
-<div class="journey-cell "><strong>A2</strong>[用户需要的结果]</div>
-<div class="journey-cell phase-start"><strong>A3</strong>[用户需要的结果]</div>
-<div class="journey-cell "><strong>A4</strong>[用户需要的结果]</div>
-<div class="journey-cell phase-start"><strong>A5</strong>[用户需要的结果]</div>
-<div class="journey-cell "><strong>A6</strong>[用户需要的结果]</div>
-<div class="journey-cell phase-start"><strong>A7</strong>[用户需要的结果]</div>
-<div class="journey-cell "><strong>A8</strong>[用户需要的结果]</div>
+<div class="journey-row need" data-journey-layer="need"><div class="journey-cell">用户需求<small>期望能力，不写控件</small></div>
+<div class="journey-cell  " data-action-ref="A1"><span class="journey-inline-id">A1</span> 需要一种方式[期望能力]，以便[用户结果]。</div>
+<div class="journey-cell  " data-action-ref="A2"><span class="journey-inline-id">A2</span> 需要一种方式[期望能力]，以便[用户结果]。</div>
+<div class="journey-cell phase-start " data-action-ref="A3"><span class="journey-inline-id">A3</span> 需要一种方式[期望能力]，以便[用户结果]。</div>
+<div class="journey-cell  " data-action-ref="A4"><span class="journey-inline-id">A4</span> 需要一种方式[期望能力]，以便[用户结果]。</div>
+<div class="journey-cell phase-start " data-action-ref="A5"><span class="journey-inline-id">A5</span> 需要一种方式[期望能力]，以便[用户结果]。</div>
+<div class="journey-cell  " data-action-ref="A6"><span class="journey-inline-id">A6</span> 需要一种方式[期望能力]，以便[用户结果]。</div>
 </div>
-<div class="journey-row idea" data-journey-layer="idea"><div class="journey-cell">设计点子 / 优先级与责任</div>
-<div class="journey-cell "><strong>A1</strong>[设计点子、优先级与责任]</div>
-<div class="journey-cell "><strong>A2</strong>[设计点子、优先级与责任]</div>
-<div class="journey-cell phase-start"><strong>A3</strong>[设计点子、优先级与责任]</div>
-<div class="journey-cell "><strong>A4</strong>[设计点子、优先级与责任]</div>
-<div class="journey-cell phase-start"><strong>A5</strong>[设计点子、优先级与责任]</div>
-<div class="journey-cell "><strong>A6</strong>[设计点子、优先级与责任]</div>
-<div class="journey-cell phase-start"><strong>A7</strong>[设计点子、优先级与责任]</div>
-<div class="journey-cell "><strong>A8</strong>[设计点子、优先级与责任]</div>
+<div class="journey-row idea" data-journey-layer="idea"><div class="journey-cell">设计点子<small>方案假设，非本期承诺</small></div>
+<div class="journey-cell  " data-action-ref="A1"><div class="journey-idea-title"><span class="journey-badge pending">待评估</span>[候选方案名称]</div><small>[成立条件 / 对应需求]；对应 A1 · [建议责任 / 待确认]</small></div>
+<div class="journey-cell  " data-action-ref="A2"><div class="journey-idea-title"><span class="journey-badge pending">待评估</span>[候选方案名称]</div><small>[成立条件 / 对应需求]；对应 A2 · [建议责任 / 待确认]</small></div>
+<div class="journey-cell phase-start " data-action-ref="A3"><div class="journey-idea-title"><span class="journey-badge pending">待评估</span>[候选方案名称]</div><small>[成立条件 / 对应需求]；对应 A3 · [建议责任 / 待确认]</small></div>
+<div class="journey-cell  " data-action-ref="A4"><div class="journey-idea-title"><span class="journey-badge pending">待评估</span>[候选方案名称]</div><small>[成立条件 / 对应需求]；对应 A4 · [建议责任 / 待确认]</small></div>
+<div class="journey-cell phase-start " data-action-ref="A5"><div class="journey-idea-title"><span class="journey-badge pending">待评估</span>[候选方案名称]</div><small>[成立条件 / 对应需求]；对应 A5 · [建议责任 / 待确认]</small></div>
+<div class="journey-cell  " data-action-ref="A6"><div class="journey-idea-title"><span class="journey-badge pending">待评估</span>[候选方案名称]</div><small>[成立条件 / 对应需求]；对应 A6 · [建议责任 / 待确认]</small></div>
 </div>
-<div class="journey-row evidence" data-journey-layer="evidence"><div class="journey-cell">衡量与证据</div>
-<div class="journey-cell "><strong>A1</strong>[证据与验证方式]</div>
-<div class="journey-cell "><strong>A2</strong>[证据与验证方式]</div>
-<div class="journey-cell phase-start"><strong>A3</strong>[证据与验证方式]</div>
-<div class="journey-cell "><strong>A4</strong>[证据与验证方式]</div>
-<div class="journey-cell phase-start"><strong>A5</strong>[证据与验证方式]</div>
-<div class="journey-cell "><strong>A6</strong>[证据与验证方式]</div>
-<div class="journey-cell phase-start"><strong>A7</strong>[证据与验证方式]</div>
-<div class="journey-cell "><strong>A8</strong>[证据与验证方式]</div>
+<div class="journey-row evidence" data-journey-layer="evidence"><div class="journey-cell">衡量与证据<small>无基线不填目标数字</small></div>
+<div class="journey-cell  " data-action-ref="A1">[观察项与口径] <span class="journey-badge pending">待验证</span><small>[基线来源 / 采证方式；无基线不填目标数字]</small></div>
+<div class="journey-cell  " data-action-ref="A2">[观察项与口径] <span class="journey-badge pending">待验证</span><small>[基线来源 / 采证方式；无基线不填目标数字]</small></div>
+<div class="journey-cell phase-start " data-action-ref="A3">[观察项与口径] <span class="journey-badge pending">待验证</span><small>[基线来源 / 采证方式；无基线不填目标数字]</small></div>
+<div class="journey-cell  " data-action-ref="A4">[观察项与口径] <span class="journey-badge pending">待验证</span><small>[基线来源 / 采证方式；无基线不填目标数字]</small></div>
+<div class="journey-cell phase-start " data-action-ref="A5">[观察项与口径] <span class="journey-badge pending">待验证</span><small>[基线来源 / 采证方式；无基线不填目标数字]</small></div>
+<div class="journey-cell  " data-action-ref="A6">[观察项与口径] <span class="journey-badge pending">待验证</span><small>[基线来源 / 采证方式；无基线不填目标数字]</small></div>
 </div>
 </div></div><div class="journey-handoffs">
-<div><strong>[发起角色 → 接收角色]</strong>[交接物、接手条件与失败处理]</div>
-<div><strong>[发起角色 → 接收角色]</strong>[交接物、接手条件与失败处理]</div>
-<div><strong>[发起角色 → 接收角色]</strong>[交接物、接手条件与失败处理]</div>
+<div><strong>[发起角色 → 接收角色]</strong>[交接物、接手条件、失败时返回位置]</div>
+</div></div></div>
+<h4>[Case 名称] · 目标旅程</h4><div class="journey-context">
+<div><strong>产品 / 模块 · 核心用户</strong>[产品 / 模块；核心用户及其目标]</div>
+<div><strong>其他目标用户 · 场景 / 覆盖范围</strong>[其他参与角色、具体场景及覆盖范围]</div>
+<div><strong>起止边界 · 地图性质 / 证据状态</strong>[任务起点、真实完成标识与证据边界]</div>
+<div><strong>参与角色 / 阅读规则</strong>[角色定义；实线为依赖或交接，虚线为失败返回]</div>
+</div><div class="journey-legend"><span><i></i>交接 / 依赖 →</span><span><i class="return"></i>异常返回</span></div>
+<div class="journey-viewer" data-journey-viewer data-journey-component="1" data-journey-type="target" role="region" aria-label="[Case 名称] · 目标旅程旅程"><div class="journey-layer-toolbar" data-journey-controls data-target="case-template-target-board" role="group" aria-label="选择旅程内容层"><button type="button" class="journey-fullscreen-button" data-journey-fullscreen aria-pressed="false">全屏查看</button><strong>显示内容</strong>
+<label><input type="checkbox" data-layer-toggle="doing" checked>所做</label>
+<label><input type="checkbox" data-layer-toggle="experience" checked>目标体验</label>
+<label><input type="checkbox" data-layer-toggle="design" checked>支持设计</label>
+<label><input type="checkbox" data-layer-toggle="metrics" checked>验证指标</label>
+</div><div class="journey-map"><div class="journey-scroll" tabindex="0" role="region" aria-label="阶段与动作横向排列，角色和体验维度纵向排列"><div class="journey-board" id="case-template-target-board" data-action-count="6" style="--journey-cols:6"><div class="journey-row head phase"><div class="journey-cell">阶段 →<small>业务阶段 / 关键结果</small></div>
+<div class="journey-cell stage-tone-1" style="grid-column:span 2">[业务阶段]<small>[阶段关键结果]</small></div>
+<div class="journey-cell stage-tone-2" style="grid-column:span 2">[业务阶段]<small>[阶段关键结果]</small></div>
+<div class="journey-cell stage-tone-3" style="grid-column:span 2">[业务阶段]<small>[阶段关键结果]</small></div>
+</div><div class="journey-row head substage"><div class="journey-cell">动作列 →<small>动作、体验与证据逐列对齐</small></div>
+<div class="journey-cell stage-tone-1 ">A1 · [动作名称]</div>
+<div class="journey-cell stage-tone-1 ">A2 · [动作名称]</div>
+<div class="journey-cell stage-tone-2 phase-start">A3 · [动作名称]</div>
+<div class="journey-cell stage-tone-2 ">A4 · [动作名称]</div>
+<div class="journey-cell stage-tone-3 phase-start">A5 · [动作名称]</div>
+<div class="journey-cell stage-tone-3 ">A6 · [动作名称]</div>
+</div><div class="journey-band" data-journey-layer="doing"><strong>多角色协作泳道 / 用户所做</strong><span>[目标旅程 / 方案假设与验证边界]</span></div><div class="journey-flow" data-journey-layer="doing" data-journey-links="[{&quot;from&quot;: &quot;case-template-target-A1&quot;, &quot;to&quot;: &quot;case-template-target-A2&quot;, &quot;label&quot;: &quot;[交接物 / 接手条件]&quot;}, {&quot;from&quot;: &quot;case-template-target-A2&quot;, &quot;to&quot;: &quot;case-template-target-A3&quot;, &quot;label&quot;: &quot;[交接物 / 接手条件]&quot;}, {&quot;from&quot;: &quot;case-template-target-A3&quot;, &quot;to&quot;: &quot;case-template-target-A4&quot;, &quot;label&quot;: &quot;[交接物 / 接手条件]&quot;}, {&quot;from&quot;: &quot;case-template-target-A4&quot;, &quot;to&quot;: &quot;case-template-target-A5&quot;, &quot;label&quot;: &quot;[交接物 / 接手条件]&quot;}, {&quot;from&quot;: &quot;case-template-target-A5&quot;, &quot;to&quot;: &quot;case-template-target-A6&quot;, &quot;label&quot;: &quot;[交接物 / 接手条件]&quot;}, {&quot;from&quot;: &quot;case-template-target-A5&quot;, &quot;to&quot;: &quot;case-template-target-A3&quot;, &quot;label&quot;: &quot;[触发条件 → 恢复动作]&quot;, &quot;kind&quot;: &quot;return&quot;}]"><svg class="journey-edges" aria-hidden="true"></svg>
+<div class="journey-row journey-role user"><div class="journey-role-label"><strong>[执行角色]</strong><small>[角色职责 / 待确认]</small></div>
+<div class=""><div class="journey-node" id="case-template-target-A1"><strong><span class="action-id">A1</span>[动作名称]</strong>[动作、输入输出与用户可见反馈]</div></div>
+<div class=""><div class="journey-node" id="case-template-target-A2"><strong><span class="action-id">A2</span>[动作名称]</strong>[动作、输入输出与用户可见反馈]</div></div>
+<div class="phase-start"><span class="journey-empty">—</span></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class="phase-start"><span class="journey-empty">—</span></div>
+<div class=""><span class="journey-empty">—</span></div>
+</div>
+<div class="journey-row journey-role role-a"><div class="journey-role-label"><strong>[执行角色]</strong><small>[角色职责 / 待确认]</small></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class="phase-start"><div class="journey-node" id="case-template-target-A3"><strong><span class="action-id">A3</span>[动作名称]</strong>[动作、输入输出与用户可见反馈]</div></div>
+<div class=""><div class="journey-node" id="case-template-target-A4"><strong><span class="action-id">A4</span>[动作名称]</strong>[动作、输入输出与用户可见反馈]</div></div>
+<div class="phase-start"><span class="journey-empty">—</span></div>
+<div class=""><span class="journey-empty">—</span></div>
+</div>
+<div class="journey-row journey-role role-b"><div class="journey-role-label"><strong>[执行角色]</strong><small>[角色职责 / 待确认]</small></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class="phase-start"><span class="journey-empty">—</span></div>
+<div class=""><span class="journey-empty">—</span></div>
+<div class="phase-start"><div class="journey-node" id="case-template-target-A5"><strong><span class="action-id">A5</span>[动作名称]</strong>[动作、输入输出与用户可见反馈]</div></div>
+<div class=""><div class="journey-node" id="case-template-target-A6"><strong><span class="action-id">A6</span>[动作名称]</strong>[动作、输入输出与用户可见反馈]</div></div>
+</div>
+<div class="journey-flow-note">实线为任务依赖与交接；虚线为失败返回。交接条件见图下说明。</div></div>
+<div class="journey-row target-experience" data-journey-layer="experience"><div class="journey-cell">目标体验<small>业务改善，非界面描述</small></div>
+<div class="journey-cell  " data-action-ref="A1">[该动作对应的业务改善和目标体验，不重复现状阻碍]</div>
+<div class="journey-cell  " data-action-ref="A2">[该动作对应的业务改善和目标体验，不重复现状阻碍]</div>
+<div class="journey-cell phase-start " data-action-ref="A3">[该动作对应的业务改善和目标体验，不重复现状阻碍]</div>
+<div class="journey-cell  " data-action-ref="A4">[该动作对应的业务改善和目标体验，不重复现状阻碍]</div>
+<div class="journey-cell phase-start " data-action-ref="A5">[该动作对应的业务改善和目标体验，不重复现状阻碍]</div>
+<div class="journey-cell  " data-action-ref="A6">[该动作对应的业务改善和目标体验，不重复现状阻碍]</div>
+</div>
+<div class="journey-row target-design" data-journey-layer="design"><div class="journey-cell">支持设计<small>对应现状需求与点子</small></div>
+<div class="journey-cell  " data-action-ref="A1">[支持这项目标体验的设计策略]<small>[对应现状需求、设计点子及成立条件]</small></div>
+<div class="journey-cell  " data-action-ref="A2">[支持这项目标体验的设计策略]<small>[对应现状需求、设计点子及成立条件]</small></div>
+<div class="journey-cell phase-start " data-action-ref="A3">[支持这项目标体验的设计策略]<small>[对应现状需求、设计点子及成立条件]</small></div>
+<div class="journey-cell  " data-action-ref="A4">[支持这项目标体验的设计策略]<small>[对应现状需求、设计点子及成立条件]</small></div>
+<div class="journey-cell phase-start " data-action-ref="A5">[支持这项目标体验的设计策略]<small>[对应现状需求、设计点子及成立条件]</small></div>
+<div class="journey-cell  " data-action-ref="A6">[支持这项目标体验的设计策略]<small>[对应现状需求、设计点子及成立条件]</small></div>
+</div>
+<div class="journey-row target-metrics" data-journey-layer="metrics"><div class="journey-cell">验证指标<small>口径与验证方式</small></div>
+<div class="journey-cell  " data-action-ref="A1">[验证目标体验的观察项 / 指标口径] <span class="journey-badge pending">待验证</span><small>[验证方法与证据边界；无基线不填目标值]</small></div>
+<div class="journey-cell  " data-action-ref="A2">[验证目标体验的观察项 / 指标口径] <span class="journey-badge pending">待验证</span><small>[验证方法与证据边界；无基线不填目标值]</small></div>
+<div class="journey-cell phase-start " data-action-ref="A3">[验证目标体验的观察项 / 指标口径] <span class="journey-badge pending">待验证</span><small>[验证方法与证据边界；无基线不填目标值]</small></div>
+<div class="journey-cell  " data-action-ref="A4">[验证目标体验的观察项 / 指标口径] <span class="journey-badge pending">待验证</span><small>[验证方法与证据边界；无基线不填目标值]</small></div>
+<div class="journey-cell phase-start " data-action-ref="A5">[验证目标体验的观察项 / 指标口径] <span class="journey-badge pending">待验证</span><small>[验证方法与证据边界；无基线不填目标值]</small></div>
+<div class="journey-cell  " data-action-ref="A6">[验证目标体验的观察项 / 指标口径] <span class="journey-badge pending">待验证</span><small>[验证方法与证据边界；无基线不填目标值]</small></div>
+</div>
+</div></div><div class="journey-handoffs">
+<div><strong>[发起角色 → 接收角色]</strong>[交接物、接手条件、失败时返回位置]</div>
 </div></div></div>
           <h3>Case 内的异常分支 <span class="chip gray">条件必需</span></h3>
           <p>[在所属 Case 内写明异常触发、反馈、恢复动作、返回位置及恢复完成标识，不另建异常 Case。]</p>
@@ -764,26 +840,59 @@
         const svg = flow.querySelector('.journey-edges');
         const links = JSON.parse(flow.dataset.journeyLinks);
         const make = (tag, attrs, text) => { const el = document.createElementNS(ns, tag); Object.entries(attrs || {}).forEach(([key, value]) => el.setAttribute(key, value)); if (text) el.textContent = text; return el; };
+        const intersects = (a,b,p=5) => a.l < b.r+p && a.r > b.l-p && a.t < b.b+p && a.b > b.t-p;
         const draw = () => {
           if (!flow.clientWidth || !flow.clientHeight) return;
+          const bottom = 56 + links.filter(l => l.kind === 'return').length * 28;
+          if (flow.style.paddingBottom !== `${bottom}px`) { flow.style.paddingBottom = `${bottom}px`; }
           const base = flow.getBoundingClientRect();
-          const box = id => { const el = document.getElementById(id); if (!el || !flow.contains(el)) return null; const r = el.getBoundingClientRect(); return {l:r.left-base.left,r:r.right-base.left,t:r.top-base.top,b:r.bottom-base.top,x:r.left-base.left+r.width/2,y:r.top-base.top+r.height/2}; };
+          const box = el => { const r = el.getBoundingClientRect(); return {l:r.left-base.left,r:r.right-base.left,t:r.top-base.top,b:r.bottom-base.top,x:r.left-base.left+r.width/2,y:r.top-base.top+r.height/2}; };
+          const nodes = new Map([...flow.querySelectorAll('.journey-node')].map(el => [el.id,box(el)]));
+          const obstacles = [...nodes.values()];
+          const maxBottom = Math.max(...obstacles.map(n => n.b));
+          const placed = [];
           svg.setAttribute('viewBox', `0 0 ${flow.clientWidth} ${flow.clientHeight}`);
           svg.replaceChildren();
           const defs = make('defs');
           ['main','return'].forEach(kind => { const marker = make('marker',{id:`journey-${index}-${kind}`,viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:5,markerHeight:5,orient:'auto'}); marker.append(make('path',{d:'M0 0 L10 5 L0 10Z',fill:kind==='main'?'#7092ae':'#aa741b'})); defs.append(marker); });
           svg.append(defs);
           let returnIndex = 0;
+          const pending = [];
           links.forEach(link => {
-            const a=box(link.from), b=box(link.to); if (!a || !b) return;
+            const a=nodes.get(link.from), b=nodes.get(link.to); if (!a || !b) return;
             const isReturn = link.kind === 'return';
             const mid=(a.r+b.l)/2;
-            const rail=14+(returnIndex%3)*22;
             let points, x, y;
-            if (isReturn) { returnIndex++; points=[[a.x,a.t],[a.x,rail],[b.x,rail],[b.x,b.t]]; x=(a.x+b.x)/2; y=rail; }
-            else { points=[[a.r,a.y],[mid,a.y],[mid,b.y],[b.l,b.y]]; x=mid; y=Math.abs(a.y-b.y)>12?(a.y+b.y)/2:a.y-18; }
+            if (isReturn) { const rail=maxBottom+22+(returnIndex++)*28; points=[[a.x,a.b],[a.x,rail],[b.x,rail],[b.x,b.b]]; x=(a.x+b.x)/2; y=rail; }
+            else if (Math.abs(a.y-b.y)<12) { points=[[a.r,a.y],[b.l,b.y]]; x=mid; y=Math.min(a.t,b.t)-16; }
+            else { points=[[a.r,a.y],[mid,a.y],[mid,b.y],[b.l,b.y]]; x=mid; y=a.y<b.y?(a.b+b.t)/2:(b.b+a.t)/2; }
             svg.append(make('path',{d:points.map((p,i)=>`${i?'L':'M'} ${p[0]} ${p[1]}`).join(' '),class:isReturn?'edge return':'edge','marker-end':`url(#journey-${index}-${isReturn?'return':'main'})`}));
-            if (link.label) { const w=Math.max(70,link.label.length*9+14); svg.append(make('rect',{x:x-w/2,y:y-10,width:w,height:20,rx:4,class:'journey-label-bg'})); svg.append(make('text',{x,y:y+3,'text-anchor':'middle',class:isReturn?'journey-edge-label return':'journey-edge-label'},link.label)); }
+            if (link.label) pending.push({link,x,y,isReturn});
+          });
+          pending.forEach(({link,x,y,isReturn}) => {
+            const text = make('text',{'text-anchor':'middle',class:isReturn?'journey-edge-label return':'journey-edge-label'},link.label);
+            svg.append(text);
+            const width = Math.ceil(text.getComputedTextLength())+16, height=22;
+            const candidates = [{x,y}];
+            if (!isReturn) {
+              // Same-row labels sit above cards. Cross-row labels prefer the clear row gap.
+              [Math.min(nodes.get(link.from).t,nodes.get(link.to).t)-16,18,44,68].forEach(cy => {
+                [x,(nodes.get(link.from).x+nodes.get(link.to).x)/2,nodes.get(link.from).x,nodes.get(link.to).x].forEach(cx => candidates.push({x:cx,y:cy}));
+              });
+              for (let cy=18;cy<76;cy+=24) for (let cx=160+width/2;cx<flow.clientWidth-width/2;cx+=width+14) candidates.push({x:cx,y:cy});
+            }
+            let chosen;
+            for (const c of candidates) {
+              c.x=Math.min(flow.clientWidth-width/2-6,Math.max(150+width/2,c.x));
+              const r={l:c.x-width/2,r:c.x+width/2,t:c.y-height/2,b:c.y+height/2};
+              if (r.t>=2 && !obstacles.some(n=>intersects(r,n)) && !placed.some(n=>intersects(r,n,3))) {chosen={...c,...r};break;}
+            }
+            // Extremely dense labels remain accessible beside the diagram instead of covering a card.
+            if (!chosen) {text.remove();return;}
+            placed.push(chosen);
+            const bg=make('rect',{x:chosen.l,y:chosen.t,width,height,rx:4,class:'journey-label-bg','data-link-label':link.label});
+            svg.insertBefore(bg,text);
+            text.setAttribute('x',chosen.x);text.setAttribute('y',chosen.y+3);
           });
         };
         new ResizeObserver(draw).observe(flow);
