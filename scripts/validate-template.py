@@ -79,7 +79,11 @@ def validate(file,template):
         check(bool(v.all(lambda x:'data-journey-fullscreen' in x.attrs)),f'{label}: 缺少全屏控件')
         controls=v.all(lambda x:'data-journey-controls' in x.attrs)
         check(bool(controls) and controls[0].attrs.get('data-target')==board.attrs.get('id'),f'{label}: 筛选目标不匹配')
-        for layer in ['doing','thinking','pain','need','idea']:
+        target=v.attrs.get('data-journey-type')=='target'
+        required_layers=['doing','experience','design','metrics'] if target else ['doing','thinking','pain','need','idea']
+        if target:
+            check(not board.all(lambda x:x.attrs.get('data-journey-layer') in {'pain','need','idea','evidence'}),f'{label}: 目标旅程不应展示现状断点或现状需求行')
+        for layer in required_layers:
             check(bool(v.all(lambda x:x.attrs.get('data-layer-toggle')==layer)),f'{label}: 缺少 {layer} 筛选')
             check(bool(board.all(lambda x:x.attrs.get('data-journey-layer')==layer)),f'{label}: 缺少 {layer} 内容层')
         phases=find(board,'phase');sub=find(board,'substage')
