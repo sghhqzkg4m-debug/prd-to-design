@@ -45,7 +45,10 @@ def validate(file,template):
         nav=n.all(lambda x:x.attrs.get('id')=='toc')
         return [x.attrs.get('href') for x in nav[0].all(lambda x:x.tag=='a')] if nav else []
     check(toc(root)==toc(tr),'目录锚点或顺序偏离模板')
-    core={'jobs':['job-box','case-block','case-facts','goal-chain'],'solution':['scope-row'],'pages':['process-map'],'states':['table-wrap'],'validation':['track','check-list']}
+    check(not find(root,'sidebar-note'),'成品 HTML 不应显示模板侧栏说明')
+    check(not find(root,'hero-decoration'),'首页不应显示右下角装饰底图')
+    check(bool(find(root,'hero-subtitle')) and '业务背景 → 用户任务 → 设计方案 → 可验证结果' not in src,'首页副标题仍是固定文案')
+    core={'jobs':['job-box','case-block','case-facts','goal-chain'],'solution':['scope-row'],'pages':['process-map','wireframe-grid']}
     for n in sections:
         for c in core.get(n.attrs.get('id'),[]):check(bool(find(n,c)),f'{n.attrs.get("id")}: 缺少模板主要组件 {c}')
     benchmark=next((n for n in sections if n.attrs.get('id')=='benchmark'),None)
@@ -54,7 +57,8 @@ def validate(file,template):
         expected=['设计议题','具体竞品、参考功能与功能亮点','可参考的点']
         headers=[re.sub(r'\s+','',h.content()) for h in tables[0].all(lambda x:x.tag=='th')] if tables else []
         check(headers==expected,'benchmark: 竞品分析表须沿用模板的三列议题框架')
-        check(bool(find(benchmark,'callout')),'benchmark: 缺少本轮判断区块')
+        details=benchmark.all(lambda x:x.tag=='details' and x.has('benchmark-detail'))
+        check(len(details)==1 and 'open' not in details[0].attrs,'benchmark: 研究依据与本轮判断须合并并默认折叠')
         if tables:
             body_rows=tables[0].all(lambda x:x.tag=='tr' and x.parent and x.parent.tag=='tbody')
             for row in body_rows:
