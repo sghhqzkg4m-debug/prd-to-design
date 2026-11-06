@@ -336,19 +336,28 @@
     .process-map { margin: 16px 0 26px; padding: 20px; border: 1px solid #d9e8f4; border-radius: 14px; background: #fbfdff; }
     .process-boundary { margin-bottom: 18px; color: #567087; font-size: 12px; }
     .process-flow { overflow-x: auto; padding-bottom: 5px; }
-    .process-grid { position: relative; display: grid; grid-template-columns: 96px repeat(var(--process-cols), minmax(190px,1fr)); gap: 16px 42px; align-items: start; min-width: max(100%, var(--process-min-width, 780px)); padding: 8px 12px 70px; }
+    .process-grid { position: relative; display: grid; grid-template-columns: 96px repeat(var(--process-cols), max-content); column-gap: 30px; row-gap: 88px; align-items: start; min-width: max(100%, var(--process-min-width, 1200px)); padding: 8px 16px 120px; }
     .process-links { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
     .process-links > path { fill: none; stroke: #6b9fc7; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .process-links > path.return { stroke: #c18a2a; stroke-width: 1.6; stroke-dasharray: 5 4; }
+    .process-links > path.return { stroke: #b97814; stroke-width: 2; stroke-dasharray: 6 5; }
+    .process-links .line-label-bg { fill: #fff; stroke: #d4e3ee; stroke-width: 1; rx: 5; }
+    .process-links .line-label-bg.return { fill: #fff9ed; stroke: #e7c98b; }
+    .process-links .line-label { fill: #2f638c; font-size: 10px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; }
+    .process-links .line-label.return { fill: #916014; }
     .process-role { position: relative; z-index: 1; display: grid; place-items: center; align-self: stretch; justify-self: stretch; min-height: 112px; padding: 12px; border: 1px solid #cfe2f2; border-radius: 10px; background: #eaf3fb; color: #315f83; font-size: 12px; font-weight: 750; line-height: 1.4; text-align: center; }
     .process-role.collaborator { border-color: #c9e8dd; background: #eaf8f2; color: #257263; }
-    .process-cell { position: relative; z-index: 1; min-width: 0; align-self: start; }
+    .process-cell { position: relative; z-index: 1; width: max-content; max-width: 360px; justify-self: start; align-self: start; }
     .process-cell.empty { min-height: 1px; }
-    .process-node { min-width: 0; padding: 14px 16px; border: 1px solid #cfe0ee; border-radius: 10px; background: #eef6ff; color: #426078; font-size: 12px; line-height: 1.6; }
+    .process-node { box-sizing: border-box; width: max-content; min-width: 220px; max-width: 360px; padding: 14px 16px; border: 1px solid #cfe0ee; border-radius: 10px; background: #eef6ff; color: #426078; font-size: 12px; line-height: 1.6; }
     .process-cell.collaborator .process-node { background: #f1fbf6; border-color: #cee9dd; }
     .process-node strong { display: block; margin-bottom: 5px; color: #24537c; font-size: 13px; }
     .process-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 7px; }
     .process-meta span { padding: 2px 7px; border-radius: 5px; background: #dceaf8; color: #3d6484; font-size: 10px; }
+    .process-meta span.cross-platform { background: #e1f4ef; color: #14735e; }
+    .process-legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 0 0 14px; color: #55738a; font-size: 11px; }
+    .process-legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .process-legend i { width: 20px; border-top: 2px solid #6b9fc7; }
+    .process-legend i.return { border-top: 2px dashed #b97814; }
     .process-branch { margin-top: 10px; padding: 10px 12px; border-left: 3px solid #d69a2d; border-radius: 0 7px 7px 0; background: #fff8ec; color: #725b3a; }
     .process-branch strong { display: inline; margin: 0; color: #8a621c; font-size: 11px; }
     .process-branch span { display: block; margin-top: 3px; }
@@ -689,18 +698,19 @@
 
         <section class="chapter" id="pages">
           <div class="chapter-head"><span class="chapter-index">05</span><div><h2>核心流程、页面与交互</h2><p class="chapter-desc">旅程讲协作，页面流程讲跳转；每个页面讲信息优先级和反馈。</p></div></div>
-          <p>按实际任务决定横向步骤数量：入口或页面变化、用户关键判断、跨角色交接和结果状态需要单独表达时才拆分；同一页面中的普通字段操作不拆成节点。按实际参与角色增减泳道，同一步骤由哪个角色执行，就放在哪一行；节点间用有向连线表达主路径与交接，失败返回用虚线回到目标节点。失败路径放在触发它的步骤内，写清条件、反馈、下一步与返回位置；不另设统一失败泳道。以下节点仅示意结构，真实项目按实际任务增减步骤，不默认采用三步。</p>
+          <p>按实际任务决定横向步骤数量：入口或页面变化、用户关键判断、跨角色交接和结果状态需要单独表达时才拆分；同一页面中的普通字段操作不拆成节点。按实际参与角色增减泳道，同一步骤由哪个角色执行，就放在哪一行；节点标注“平台名称－具体页面”，跨平台跳转标明目标平台。节点间用有向连线表达主路径与交接，失败返回用底部独立虚线回到目标节点，连接线不穿过节点。失败路径放在触发它的步骤内，写清条件、反馈、下一步与返回位置；不另设统一失败泳道。以下节点仅示意结构，真实项目按实际任务增减步骤，不默认采用三步。</p>
           <h3>CASE 01 的页面流程</h3>
           <div class="process-map" aria-label="页面流程与嵌入式失败分支示例">
             <div class="process-boundary"><strong>流程边界：</strong>[写明 Case 的起点与真实完成标识，避免把中间页面成功当成任务完成。]</div>
-            <div class="process-flow"><div class="process-grid" style="--process-cols:3; --process-min-width:900px">
+            <div class="process-legend" aria-label="流程连线图例"><span><i></i>主路径 / 角色交接</span><span><i class="return"></i>异常返回</span><span>节点位置：平台名称－具体页面</span></div>
+            <div class="process-flow"><div class="process-grid" style="--process-cols:3; --process-min-width:1200px">
               <svg class="process-links" aria-hidden="true"></svg>
               <div class="process-role">[主要执行者]</div>
-              <div class="process-cell" data-step="1"><div class="process-node"><div class="process-meta"><span>[入口页面]</span></div><strong>01 · [读取任务上下文]</strong>[作出开始任务所需的判断。]</div></div>
-              <div class="process-cell" data-step="2"><div class="process-node"><div class="process-meta"><span>[操作页面]</span></div><strong>02 · [完成关键选择与校验]</strong>[形成必要的判断或状态变化。]<div class="process-branch" data-return-step="2"><strong>校验失败：</strong><span>[指出原因并保留输入。]</span><em>修正后返回 → 步骤 02</em></div></div></div>
+              <div class="process-cell" data-step="1"><div class="process-node"><div class="process-meta"><span>[平台名称－具体入口页面]</span></div><strong>01 · [读取任务上下文]</strong>[作出开始任务所需的判断。]</div></div>
+              <div class="process-cell" data-step="2"><div class="process-node"><div class="process-meta"><span>[平台名称－具体操作页面]</span></div><strong>02 · [完成关键选择与校验]</strong>[形成必要的判断或状态变化。]<div class="process-branch" data-return-step="2"><strong>校验失败：</strong><span>[指出原因并保留输入。]</span><em>修正后返回 → 步骤 02</em></div></div></div>
               <div class="process-cell empty"></div>
               <div class="process-role collaborator">[接收角色]</div><div class="process-cell empty"></div><div class="process-cell empty"></div>
-              <div class="process-cell collaborator" data-step="3"><div class="process-node"><div class="process-meta"><span>[结果页面 / 交接点]</span></div><strong>03 · [核对真实完成结果]</strong>[接收交接物并确认可观察结果。]<div class="process-branch" data-return-step="2"><strong>结果未知：</strong><span>[先查询最新状态，不直接重复提交。]</span><em>状态明确后 → 完成或返回步骤 02</em></div></div></div>
+              <div class="process-cell collaborator" data-step="3" data-link-label="跨平台交接"><div class="process-node"><div class="process-meta"><span class="cross-platform">[目标平台名称－具体结果页面]</span></div><strong>03 · [核对真实完成结果]</strong>[接收交接物并确认可观察结果。]<div class="process-branch" data-return-step="2"><strong>结果未知：</strong><span>[先查询最新状态，不直接重复提交。]</span><em>状态明确后 → 完成或返回步骤 02</em></div></div></div>
             </div></div>
           </div>
           <h3>跨步骤共性约束 <span class="chip gray">条件必需</span></h3><p>[只有状态、权限或高影响操作同时影响多个流程节点时，简述适用范围、用户可见影响和处理规则；单点异常放回对应流程节点，不再另列状态表。]</p>
@@ -889,17 +899,25 @@
             const r = element.getBoundingClientRect();
             return { l: r.left - base.left, r: r.right - base.left, t: r.top - base.top, b: r.bottom - base.top, w: r.width, h: r.height };
           };
+          const addLabel = (x, y, value, kind = 'main') => {
+            if (!value) return;
+            const width = Math.max(46, [...value].reduce((n, char) => n + (/[^\x00-\x7F]/.test(char) ? 10 : 6), 0) + 16);
+            svg.appendChild(make('rect', { x: x - width / 2, y: y - 9, width, height: 18, class: `line-label-bg ${kind}` }));
+            const text = make('text', { x, y, class: `line-label ${kind}` });
+            text.textContent = value;
+            svg.appendChild(text);
+          };
           const cells = [...grid.querySelectorAll('.process-cell[data-step]')].sort((a, b) => Number(a.dataset.step) - Number(b.dataset.step));
           const byStep = new Map(cells.map(cell => [Number(cell.dataset.step), cell]));
           cells.slice(0, -1).forEach((cell, index) => {
             const from = box(cell), to = box(cells[index + 1]);
             const centerX = r => r.l + r.w / 2;
             const centerY = r => r.t + r.h / 2;
-            const sameRow = Math.abs(centerY(from) - centerY(to)) < 18;
+            const sameRow = Math.abs(from.t - to.t) < 18;
             const sameColumn = Math.abs(centerX(from) - centerX(to)) < 18;
             let d;
             if (sameRow && to.l >= from.r) {
-              const y = from.t + Math.min(from.h / 2, 62);
+              const y = from.t + Math.min(from.h / 2, to.h / 2, 62);
               d = `M ${from.r + 4} ${y} H ${to.l - 7}`;
             } else if (sameColumn && to.t >= from.b) {
               const x = centerX(from);
@@ -922,6 +940,10 @@
               d = `M ${x1} ${y1} H ${(x1 + x2) / 2} V ${y2} H ${x2}`;
             }
             svg.appendChild(make('path', { d, 'marker-end': `url(#process-main-${gridIndex})` }));
+            if (!sameRow && !sameColumn) {
+              const railY = to.t >= from.b ? (from.b + to.t) / 2 : (to.b + from.t) / 2;
+              addLabel((centerX(from) + centerX(to)) / 2, railY - 20, cells[index + 1].dataset.linkLabel || '角色交接');
+            }
           });
           let returnIndex = 0;
           grid.querySelectorAll('.process-branch[data-return-step]').forEach(branch => {
@@ -933,6 +955,7 @@
             const sourceX = from.l + from.w / 2, targetX = to.l + to.w / 2;
             const d = `M ${sourceX} ${from.b + 4} V ${railY} H ${targetX} V ${to.b + 7}`;
             svg.appendChild(make('path', { d, class: 'return', 'marker-end': `url(#process-return-${gridIndex})` }));
+            addLabel((sourceX + targetX) / 2, railY - 20, '异常返回', 'return');
           });
         };
         new ResizeObserver(draw).observe(grid);
