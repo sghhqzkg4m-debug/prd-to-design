@@ -33,7 +33,7 @@ Case 目标卡片统一命名为“体验目标”，模板、正文、追踪链
 
 ## 专业能力路由
 
-开始分析前读取内置的 [references/knowledge-analysis-method.md](references/knowledge-analysis-method.md)，按证据、Job、需求归并、能力边界和风险展开分析；无需另行安装 `prd-to-knowledge`。当用户提供现有平台页面、截图或 Workspace 时，读取适用的平台 Skill；深信服控制台使用 `sangfor-cloud-console`。需要浏览器核查时先使用 `browser-act` 或当前环境提供的等价浏览器能力。需要飞书原生流程图、关系图或结构图时读取 `beautiful-feishu-whiteboard`。
+开始分析前读取内置的 [references/knowledge-analysis-method.md](references/knowledge-analysis-method.md)，按证据、Job、需求归并、能力边界和风险展开分析；无需另行安装 `prd-to-knowledge`。涉及深信服产品时，优先从 [深信服设计平台](https://ui.sangfor.com.cn/projects) 核查对应产品线的模板、工作区和现有页面；具体证据边界见 [平台核查路由](references/platform-inspection-routing.md)。需要浏览器核查时使用当前环境可用的浏览器能力。需要飞书原生流程图、关系图或结构图时读取内置的 [飞书白板指南](references/feishu-whiteboard/guide.md)；默认使用深信服主题色，无需另行安装 `beautiful-feishu-whiteboard`。
 
 用户明确要求竞品研究，或重要未知项会影响对象、入口、流程、配置暴露、状态恢复、权限或安全时，调用 `competitive-analysis` 的产品功能体验研究模式。传入需求来源、相关 Case 的体验目标与设计目标、当前任务断点、待决策议题及已知约束；由该 Skill 完成研究深度判断、同任务比较、证据核查、体验评分和独立竞品文档。主 Skill 只提取对本期设计有用的证据、适用条件、取舍与验证，写入需求 HTML 或飞书文档。HTML 使用相对链接指向竞品文档；飞书中只有竞品文档具备可访问 URL 时才链接，否则在最终回复分别提供文件链接。未触发时不生成竞品文档；不得因为外部 Skill 不可用而伪称已经研究。
 
@@ -67,7 +67,11 @@ Case 目标卡片统一命名为“体验目标”，模板、正文、追踪链
 按 [references/template-contract.md](references/template-contract.md) 执行模板复用。多 Case 旅程统一用 `scripts/render-journeys.py` 生成同一种组件，禁止把后续 Case 改写为普通表格；动作、阶段、角色和连线由数据变化。模板连线脚本必须逐图初始化，不能绑定单一 Case 的固定 ID。页面流程主线按同排水平、同列垂直、斜向在留白处转折的规则绘制，失败返回走底部独立回路，避免穿过节点。交付时 `validate-artifacts.mjs` 自动调用模板结构校验；非标准文件名需显式运行 `validate-template.py`。校验失败不得作为完整交付。
 
 - 分析需求文件时，没有飞书链接即默认生成一份自包含 HTML，并在最终回复中提供可点击的本地文件链接；不等待用户补充链接，也不把 HTML 作为需要再次确认的可选项。用户明确要求仅分析、仅聊天答复或其他格式时，遵从其指定。
-- 用户未提供 HTML 模板或既有视觉规范时，必须以 [assets/sangfor-feishu-analysis-template.html](assets/sangfor-feishu-analysis-template.html) 的原文件为生成起点，填充项目内容。保留模板的九章标题、顺序、目录锚点、主要组件及其所在章节、CSS 和交互脚本；不得只模仿视觉样式后自行重组内容框架。可在原组件内部增补 Case、行和文字，或按证据删除模板明确标记的条件内容，但不得因此改变九章骨架。不要修改 Skill 内资产作为项目交付，也不要让产物依赖 Downloads 等机器临时路径。
+- 用户未提供 HTML 模板或既有视觉规范时，必须以 [assets/sangfor-feishu-analysis-template.html](assets/sangfor-feishu-analysis-template.html) 的原文件为生成起点，填充项目内容。保留模板的六章标题、顺序、目录锚点、主要组件及其所在章节、CSS 和交互脚本；不得只模仿视觉样式后自行重组内容框架。可在原组件内部增补 Case、行和文字，或按证据删除模板明确标记的条件内容，但不得因此改变六章骨架。不要修改 Skill 内资产作为项目交付，也不要让产物依赖 Downloads 等机器临时路径。
+- 首页副标题按项目的核心任务与设计方向撰写总结句，不保留固定流程文案；首页右下角不放装饰底图。实际项目 HTML 不显示模板使用提示或目录旁制作说明。
+- 关键文案只在对应流程节点和页面反馈中表达，不设独立文案表；状态、权限与异常恢复并入第 05 章的流程节点，跨步骤共性约束才集中说明。页面线框按实际任务与已核查的平台框架绘制完整页面，不套用固定并排小线框；深信服设计平台可访问时核查其现有框架，无法访问时不得声称已复用。
+- 现状旅程和目标旅程分别在标题中标明，并使用明显不同的标签颜色；两种旅程及不同 Case 间以分割线区隔。旅程业务阶段、动作和页面流程步骤均按实际任务生成，不能套用模板示例的三个阶段或三步。
+- 竞品章节的“议题来源”和“本轮判断”合并在一个默认收起的折叠区，内容仍须完整填写。默认主模板以六章结束，设计验收信息并入对应 Case 的完成标识、流程与待决策内容，不输出独立“设计验收与价值验证”或“附录与使用说明”章。
 - HTML 使用与飞书框架一致的业务结论；网页阅读和响应式调整只能在模板既有结构及样式能力内进行。用户提供其他模板时，也应按用户模板的章节与组件框架填充；除非用户明确要求改版，不自行调整其内容框架。
 - HTML 中的用户旅程调用 `user-journey`，详细表达规则由该 Skill 维护；按 [references/html-current-journey.md](references/html-current-journey.md) 集成到原模板的旅程组件，保留完整内容、动作列对齐、角色泳道与交接关系、显隐筛选和全屏阅读，不退化为摘要或链接。
 - 模板的“必需／条件必需／可选”角标、填写提示和制作说明只供生成时使用，产品需求分析 HTML 中应删除。业务背景、Job 和目标直接写结论；来源与证据边界简洁地标在相关结论旁或附录，不在正文解释“原材料如何归类”。详细规则与校验见 [references/template-contract.md](references/template-contract.md)。

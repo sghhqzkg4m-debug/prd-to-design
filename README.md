@@ -1,12 +1,12 @@
 # PRD 到交互设计
 
-这个仓库同时支持 Codex 和 TRAE 中国版。主 Skill 的入口是 [SKILL.md](SKILL.md)；需求与交互分析方法已内置于 [references/knowledge-analysis-method.md](references/knowledge-analysis-method.md)。竞品研究由可单独调用的 `competitive-analysis` 完成；`packages/` 包含主 Skill 和四个专业 Skill 的安装归档。
+这个仓库同时支持 Codex 和 TRAE 中国版。主 Skill 的入口是 [SKILL.md](SKILL.md)；需求分析方法与飞书白板规则已内置。竞品研究和用户旅程仍可单独调用；`packages/` 包含主 Skill 和两个专业 Skill 的安装归档。
 
 ## TRAE 用户：把仓库链接发给 TRAE
 
 仅粘贴 GitHub 链接不会自动安装 Skill。请把链接和下面这段话一起发给 TRAE：
 
-> 请打开 https://github.com/sghhqzkg4m-debug/prd-to-design ，阅读 README，然后按其中的 TRAE 安装方式安装仓库内全部 5 个 Skill。不要只根据链接重新生成一个 Skill。如果已有同名 Skill 且内容不同，先问我是否替换，不要擅自使用 `--force`。安装后检查 `~/.trae-cn/skills/prd-to-design/SKILL.md`、内置的 `references/knowledge-analysis-method.md` 及另外 4 个 Skill 的 `SKILL.md` 均存在，再告诉我如何开始使用。
+> 请打开 https://github.com/sghhqzkg4m-debug/prd-to-design ，阅读 README，然后按其中的 TRAE 安装方式安装仓库内全部 3 个 Skill。不要只根据链接重新生成一个 Skill。如果已有同名 Skill 且内容不同，先问我是否替换，不要擅自使用 `--force`。安装后检查 `~/.trae-cn/skills/prd-to-design/SKILL.md`、内置的 `references/knowledge-analysis-method.md` 与 `references/feishu-whiteboard/guide.md`，以及另外 2 个 Skill 的 `SKILL.md` 均存在，再告诉我如何开始使用。
 
 也可以在 TRAE 的终端亲自执行一条命令：
 
@@ -24,13 +24,13 @@ curl -fsSL https://raw.githubusercontent.com/sghhqzkg4m-debug/prd-to-design/main
 curl -fsSL https://raw.githubusercontent.com/sghhqzkg4m-debug/prd-to-design/main/install.sh | bash
 ```
 
-安装脚本会校验归档的 SHA-256，然后将以下五个 Skill 分别放入目标平台的技能目录：
+安装脚本会校验归档的 SHA-256，然后将以下三个 Skill 分别放入目标平台的技能目录：
 
 - `prd-to-design`：入口、需求与交互分析、HTML／飞书交付编排
 - `competitive-analysis`：独立竞品研究、功能体验评价与报告；主 Skill 触发时也会调用
 - `user-journey`：独立用户旅程分析与文档；主 Skill 调用时完整嵌入需求文档
-- `sangfor-cloud-console`：深信服控制台页面与组件参考
-- `beautiful-feishu-whiteboard`：飞书白板视觉与可编辑图形
+
+主 Skill 优先核查[深信服设计平台](https://ui.sangfor.com.cn/projects)中对应产品线的模板和现有工作区；飞书白板规则与深信服主题色位于 `references/feishu-whiteboard/`。此前安装的独立 `sangfor-cloud-console` 与 `beautiful-feishu-whiteboard` 不会被本安装器删除，仍可用于其他任务。
 
 安装后开启一个新的 Codex 会话，使用 `$prd-to-design`。如果已安装同名 Skill 且内容相同，脚本会跳过；内容不同且有交互终端时，会列出冲突项并询问是否备份和替换。选择否会在改动任何 Skill 前停止。没有交互终端时也会停止；只有用户明确同意替换后，才应加 `--force` 重试。旧版本备份在目标技能目录的 `.backup/` 下。
 
@@ -44,9 +44,9 @@ curl -fsSL https://raw.githubusercontent.com/sghhqzkg4m-debug/prd-to-design/main
 
 浏览器核查需要当前环境提供可用的浏览器能力；若使用 `browser-act`，需按其自身说明另行安装与授权。竞品研究需要可访问的实际产品界面或可靠资料；证据不足时会标明缺口，不编造体验分。`agents/openai.yaml` 是 Codex 元数据；TRAE 通过各目录的 `SKILL.md` 加载技能。
 
-飞书同步需要使用者连接可写入飞书文档和白板的工具，并拥有目标文档的编辑权限。白板 Skill 的原始流程使用已安装并登录的 `@larksuite/cli`；也可由环境中等价的飞书白板工具完成。安装此仓库不会自动配置飞书账号或权限。本地校验脚本需要 Node.js。
+飞书同步需要使用者连接可写入飞书文档和白板的工具，并拥有目标文档的编辑权限。内置白板规则可配合已安装并登录的 `@larksuite/cli`，也可使用环境中等价的飞书白板工具。安装此仓库不会自动配置飞书账号或权限。本地校验脚本需要 Node.js。
 
-`beautiful-feishu-whiteboard` 原作者为 Zara Zhang，按归档内的 MIT License 分发。
+内置白板规则源自 Zara Zhang 的 `beautiful-feishu-whiteboard`，按 [MIT License](references/feishu-whiteboard/LICENSE) 分发。
 
 用户旅程可单独使用 `$user-journey`，默认生成自包含旅程 HTML；主 Skill 需要旅程时会自动调用，并将完整结果放在原需求文档中，默认不增加独立旅程交付。
 

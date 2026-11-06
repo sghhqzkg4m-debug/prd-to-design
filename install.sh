@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO_RAW="https://raw.githubusercontent.com/sghhqzkg4m-debug/prd-to-design/main"
-SKILLS=(prd-to-design competitive-analysis user-journey sangfor-cloud-console beautiful-feishu-whiteboard)
+SKILLS=(prd-to-design competitive-analysis user-journey)
 SOURCE_DIR=""
 FORCE=0
 TARGET="codex"
@@ -11,7 +11,7 @@ usage() {
   cat <<'EOF'
 Usage: bash install.sh [--target codex|trae] [--source-dir REPO_DIR] [--force]
 
-Installs all five bundled skills. The default target is Codex.
+Installs all three bundled skills. The default target is Codex.
 TRAE CN global skills are installed into ~/.trae-cn/skills.
 With --source-dir, reads packages from a local checkout instead of downloading.
 If installed skills differ, asks before backing them up and replacing them.
