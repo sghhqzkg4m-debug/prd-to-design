@@ -50,15 +50,15 @@
     .button-icon { width: 15px; height: 15px; flex: none; }
 
     .shell { width: min(2200px, calc(100% - clamp(32px, 6vw, 160px))); margin: auto; }
-    .hero { position: relative; overflow: hidden; margin: 28px 0 30px; min-height: 280px; padding: 42px 52px 38px; border: 1px solid #d9ebe9; border-radius: 24px; background: radial-gradient(circle at 87% 22%, rgba(68,171,225,.14), transparent 32%), radial-gradient(circle at 69% 115%, rgba(52,181,135,.15), transparent 37%), linear-gradient(112deg, #fcfffd 0%, #f4fcf9 43%, #edf6ff 100%); box-shadow: 0 18px 44px rgba(33, 97, 114, .065); }
+    .hero { position: relative; overflow: hidden; margin: 28px 0 30px; min-height: 225px; padding: 42px 52px 38px; border: 1px solid #d9ebe9; border-radius: 24px; background: radial-gradient(circle at 87% 22%, rgba(68,171,225,.14), transparent 32%), radial-gradient(circle at 69% 115%, rgba(52,181,135,.15), transparent 37%), linear-gradient(112deg, #fcfffd 0%, #f4fcf9 43%, #edf6ff 100%); box-shadow: 0 18px 44px rgba(33, 97, 114, .065); }
     .hero::before { content: ""; position: absolute; width: 380px; height: 380px; border: 1px solid rgba(69, 160, 181, .13); border-radius: 50%; right: -125px; top: -265px; box-shadow: 0 0 0 54px rgba(255,255,255,.14), 0 0 0 110px rgba(36,151,185,.025); }
-    .hero-content { position: relative; z-index: 1; max-width: 830px; }
+    .hero-content { position: relative; z-index: 1; width: 100%; }
     .hero-kicker { display: flex; align-items: center; gap: 9px; color: var(--blue-deep); font-size: 12px; font-weight: 750; letter-spacing: .06em; }
     .hero-kicker::before { content: ""; width: 21px; height: 3px; border-radius: 5px; background: linear-gradient(90deg, var(--blue), var(--green)); }
     h1, h2, h3, h4, p { margin-top: 0; }
-    .hero h1 { margin: 18px 0 11px; color: var(--ink); font-size: clamp(30px, 3vw, 42px); line-height: 1.22; letter-spacing: -.035em; font-weight: 760; }
-    .hero-subtitle { margin: 0; color: var(--blue-deep); font-size: 18px; font-weight: 600; letter-spacing: .02em; }
-    .hero-intro { max-width: 690px; margin: 15px 0 25px; color: #65798d; line-height: 1.8; }
+    .hero h1 { margin: 18px 0 11px; color: var(--ink); font-size: clamp(28px, 2.7vw, 42px); line-height: 1.22; letter-spacing: -.035em; font-weight: 760; }
+    @media (min-width: 900px) { .hero h1 { white-space: nowrap; } }
+    .hero-subtitle { margin: 0 0 24px; color: var(--blue-deep); font-size: 18px; font-weight: 600; letter-spacing: .02em; }
     .meta-list { display: flex; flex-wrap: wrap; gap: 8px; }
     .meta-pill { display: inline-flex; align-items: center; min-height: 29px; padding: 2px 11px; color: #50708f; background: rgba(255,255,255,.78); border: 1px solid #e0ebf5; border-radius: 8px; font-size: 12px; }
     .meta-pill strong { margin-right: 4px; color: var(--ink); font-weight: 650; }
@@ -165,7 +165,6 @@
       .hero { margin: 15px 0 18px; padding: 29px 24px 28px; min-height: 0; border-radius: 17px; }
       .hero h1 { margin: 13px 0 8px; font-size: 29px; }
       .hero-subtitle { font-size: 15px; }
-      .hero-intro { margin: 12px 0 18px; font-size: 13px; }
         .body-grid { display: block; }
       .sidebar { position: relative; top: auto; max-height: none; padding: 12px; margin-bottom: 17px; }
       .sidebar-title { display: none; }
@@ -434,7 +433,6 @@
         <div class="hero-kicker">INTERACTION DESIGN ANALYSIS</div>
         <h1 id="page-title">[项目名称] 交互设计需求分析</h1>
         <p class="hero-subtitle">[用一句话概括本项目的核心任务与设计方向，结合项目内容撰写，避免套用固定流程文案。]</p>
-        <p class="hero-intro">[用一小段话交代业务背景与本期希望达成的业务结果。只有影响方案成立的关键前提，才在这里补一句说明。]</p>
         <div class="meta-list"><span class="meta-pill"><strong>版本</strong> V1.0</span><span class="meta-pill"><strong>更新</strong> 2026.09.22</span><span class="meta-pill"><strong>项目</strong> [产品 / 模块]</span><span class="meta-pill"><strong>状态</strong> 评审中</span></div>
       </div>
     </section>
