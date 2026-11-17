@@ -27,7 +27,22 @@ const files = fs.readdirSync(targetDir, { withFileTypes: true }).filter((entry) 
 const markdownFiles = files.filter((name) => name.endsWith(".md"));
 const htmlFiles = files.filter((name) => name.endsWith(".html"));
 if (!markdownFiles.some((name) => /交互设计需求分析|design-analysis/i.test(name)) && !htmlFiles.some((name) => !/competitive-analysis/i.test(name))) errors.push("Missing interaction design analysis HTML or Markdown file.");
-if (requireFeishu && !markdownFiles.some((name) => /飞书同步稿|feishu/i.test(name))) errors.push("Missing Feishu sync draft for --feishu mode.");
+if (requireFeishu) {
+  const planPath = path.join(targetDir, "feishu-delivery-plan.json");
+  const fetchPath = path.join(targetDir, "feishu-fetch.json");
+  if (!fs.existsSync(planPath)) errors.push("Missing feishu-delivery-plan.json; route text and visual components before writing.");
+  if (!fs.existsSync(fetchPath)) errors.push("Missing feishu-fetch.json; fetch the written Feishu document before claiming completion.");
+  if (fs.existsSync(planPath) && fs.existsSync(fetchPath)) {
+    const script = fileURLToPath(new URL('./validate_feishu_delivery.py', import.meta.url));
+    const check = spawnSync('python3', [script, 'verify', planPath, fetchPath], { encoding: 'utf8' });
+    try {
+      const result = JSON.parse(check.stdout);
+      errors.push(...result.errors.map(error => `Feishu delivery: ${error}`));
+    } catch {
+      errors.push(`Feishu delivery validation could not run: ${check.error?.message || check.stderr || check.stdout}`);
+    }
+  }
+}
 if (requireCompetitive && !htmlFiles.some((name) => /competitive-analysis/i.test(name))) errors.push("Missing independent competitive analysis HTML for --competitive mode.");
 
 const htmlSources = new Map(htmlFiles.map((name) => [name, fs.readFileSync(path.join(targetDir, name), "utf8")]));
