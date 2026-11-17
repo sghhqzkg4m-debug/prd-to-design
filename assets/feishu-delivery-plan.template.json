@@ -1,0 +1,36 @@
+{
+  "document_url": "https://example.feishu.cn/wiki/replace-with-target",
+  "sections": [
+    {"id": "opening", "reader_task": "理解业务背景、目标与版本边界", "placement": "文档开篇", "items": [
+      {"id": "background", "component": "p", "marker": "替换为该需求独有的背景短句"},
+      {"id": "business_goal", "component": "callout", "marker": "替换为该需求独有的业务目标短句"},
+      {"id": "version_boundary", "component": "omit", "reason": "【待填写】无高影响范围冲突时说明不适用；有冲突时改用 callout 和 marker"}
+    ]},
+    {"id": "tasks", "reader_task": "理解 JOB 与各 Case 的目标和路径", "placement": "用户任务章节", "items": [
+      {"id": "job", "component": "callout", "marker": "替换为该需求独有的 JOB 短句"}
+    ]},
+    {"id": "comparison", "reader_task": "比较有研究价值的设计议题", "placement": "竞品章节", "items": [
+      {"id": "competitive_comparison", "component": "omit", "reason": "【待填写】未触发竞品研究时说明；触发且多议题时改用 table 和 marker"}
+    ]},
+    {"id": "solution", "reader_task": "对照范围、对象关系与关键规则", "placement": "整体方案章节", "items": [
+      {"id": "scope", "component": "table", "marker": "替换为该需求独有的范围表头"},
+      {"id": "object_relationship", "component": "omit", "reason": "【待填写】没有需要图示的多对象关系时说明；触发时改用 whiteboard 和 marker"}
+    ]},
+    {"id": "interaction", "reader_task": "理解页面动作、反馈与恢复", "placement": "页面与交互章节", "items": [
+      {"id": "rules", "component": "table", "marker": "替换为该需求独有的规则表头"}
+    ]},
+    {"id": "review", "reader_task": "裁定问题并核对验收", "placement": "待决策与验证章节", "items": [
+      {"id": "decisions", "component": "table", "marker": "替换为该需求独有的待决策表头"},
+      {"id": "validation", "component": "table", "marker": "替换为该需求独有的验证表头"}
+    ]}
+  ],
+  "cases": [
+    {"id": "case-01", "title": "替换为实际 Case 名称", "items": [
+      {"id": "experience_goal", "component": "callout", "marker": "替换为该 Case 独有的体验目标短句"},
+      {"id": "design_goal", "component": "p", "marker": "替换为该 Case 独有的设计目标短句"},
+      {"id": "journey", "component": "whiteboard", "marker": "替换为该 Case 旅程图题"},
+      {"id": "page_flow", "component": "whiteboard", "marker": "替换为该 Case 页面流程图题"},
+      {"id": "page_layout", "component": "omit", "reason": "【待填写】真实页面尚未核查；已核查且需要页面图时改用 img 和 marker"}
+    ]}
+  ]
+}
