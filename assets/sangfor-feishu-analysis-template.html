@@ -82,6 +82,41 @@
     .chapter p:last-child { margin-bottom: 0; }
     .chapter ul, .chapter ol { margin: 9px 0 16px; padding-left: 22px; }
     .chapter li { padding-left: 2px; margin: 4px 0; }
+    .version-compare { margin: 20px 0 24px; padding: 20px; border: 1px solid #dce9f2; border-radius: 16px; background: #f9fcff; }
+    .version-compare-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .version-compare-head strong { color: var(--ink); font-size: 14px; }
+    .version-compare-head span, .version-compare-note { color: var(--muted); font-size: 12px; }
+    .version-compare-grid { display: grid; grid-template-columns: minmax(0,1fr) 44px minmax(0,1fr); gap: 10px; align-items: stretch; }
+    .version-compare-side { padding: 16px; border: 1px solid #dce7f1; border-radius: 13px; background: #fff; }
+    .version-compare-side.target { border-color: #bcebdc; background: #f7fffb; }
+    .version-compare-side h4 { margin-bottom: 12px; color: var(--blue-deep); }
+    .version-compare-side.target h4 { color: var(--green-deep); }
+    .version-step { position: relative; margin: 0 0 8px; padding: 9px 11px; border: 1px solid #e0eaf2; border-radius: 9px; background: #fff; color: var(--text); font-size: 12px; line-height: 1.55; }
+    .version-step:last-child { margin-bottom: 0; }
+    .version-step b { display: block; color: var(--ink); font-size: 11px; }
+    .version-step.changed { border-color: #bde8da; background: #ecfaf4; }
+    .version-step em { float: right; color: var(--green-deep); font-style: normal; font-size: 10px; font-weight: 700; }
+    .version-compare-arrow { display: grid; place-items: center; color: var(--blue); font-size: 27px; font-weight: 700; }
+    .version-compare-note { margin: 12px 0 0 !important; }
+    .version-diagram-scroll { overflow-x: auto; }
+    .version-diagram { display: block; width: 100%; min-width: 860px; height: auto; font-family: inherit; }
+    .vd-lane-old, .vd-lane-new { fill: #57748e; font-size: 14px; font-weight: 750; }
+    .vd-lane-new { fill: #078b73; }
+    .vd-flow-old, .vd-flow-new { fill: none; stroke: #8ea7bb; stroke-width: 2.5; }
+    .vd-flow-new { stroke: #119c7d; }
+    .vd-change-line { fill: none; stroke: #a6bdc8; stroke-width: 1.5; stroke-dasharray: 5 5; }
+    .vd-badge-bg { fill: #fff; stroke: #cde3df; }
+    .vd-badge { fill: #178b75; text-anchor: middle; font-size: 12px; font-weight: 750; }
+    .vd-node-old rect { fill: #fff; stroke: #cbdde9; stroke-width: 1.5; }
+    .vd-node-old circle { fill: #eaf3ff; }
+    .vd-node-new rect { fill: #f3fcf8; stroke: #a8dfcc; stroke-width: 1.5; }
+    .vd-node-new circle { fill: #d8f4e9; }
+    .vd-icon { fill: #2865aa; text-anchor: middle; font-size: 18px; font-weight: 700; }
+    .vd-node-new .vd-icon { fill: #078b73; }
+    .vd-title { fill: #243f55; font-size: 14px; font-weight: 700; }
+    .vd-sub { fill: #718398; font-size: 11px; }
+
+    @media (max-width: 700px) { .version-compare-grid { grid-template-columns: 1fr; } .version-compare-arrow { transform: rotate(90deg); height: 28px; } }
     .muted { color: var(--muted); }
     .lead { color: #344e63; font-size: 16px; line-height: 1.9; }
     .rule { height: 1px; margin: 25px 0; background: var(--line); }
@@ -480,6 +515,26 @@
               <div class="info-card green"><div class="card-topline"></div><h4>设计目标</h4><p>在[任务的关键环节]，通过[具体设计策略：如何组织信息、引导操作或反馈结果]，让[角色]能够[作出关键判断／完成行动／理解结果]，获得[明确的体验品质]。</p></div>
             </div>
             <div class="callout blue"><strong class="callout-title">模板填写规则 · 衡量标准</strong><p>只有指标口径、测量方式和目标值都有可靠依据时，才在上方设计目标卡片中补充“衡量标准”，并注明统计周期。缺少任一项时，报告中省略整行，不显示“XX”“待定”等占位内容。</p></div>
+          </div>
+          <div class="version-compare" aria-label="上一版本与本期版本的任务变化对比">
+            <div class="version-compare-head"><strong>版本变化速览 · [Case 名称]</strong><span>同一任务阶段对齐 · 图示为模板示意</span></div>
+            <div class="version-diagram-scroll"><svg class="version-diagram" viewBox="0 0 1020 348" role="img" aria-label="上一版本与本期版本的三阶段任务流程对比">
+              <defs><marker id="version-arrow-old" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#8ea7bb" stroke-width="1.8"/></marker><marker id="version-arrow-new" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#119c7d" stroke-width="1.8"/></marker></defs>
+              <rect x="0" y="0" width="1020" height="348" rx="16" fill="#f8fbfe"/>
+              <text x="26" y="50" class="vd-lane-old">上一版本</text><text x="26" y="216" class="vd-lane-new">本期版本</text>
+              <path d="M345 102H415 M645 102H715" class="vd-flow-old" marker-end="url(#version-arrow-old)"/><path d="M345 268H415 M645 268H715" class="vd-flow-new" marker-end="url(#version-arrow-new)"/>
+              <path d="M235 142V225 M535 142V225 M835 142V225" class="vd-change-line"/>
+              <rect x="191" y="171" width="88" height="28" rx="14" class="vd-badge-bg"/><text x="235" y="190" class="vd-badge">保留</text>
+              <rect x="491" y="171" width="88" height="28" rx="14" class="vd-badge-bg"/><text x="535" y="190" class="vd-badge">替代</text>
+              <rect x="791" y="171" width="88" height="28" rx="14" class="vd-badge-bg"/><text x="835" y="190" class="vd-badge">新增</text>
+              <g class="vd-node-old"><rect x="125" y="62" width="220" height="80" rx="14"/><circle cx="158" cy="102" r="18"/><text x="158" y="109" class="vd-icon">①</text><text x="185" y="97" class="vd-title">[原触发动作]</text><text x="185" y="119" class="vd-sub">[角色／入口]</text></g>
+              <g class="vd-node-old"><rect x="425" y="62" width="220" height="80" rx="14"/><circle cx="458" cy="102" r="18"/><text x="458" y="109" class="vd-icon">②</text><text x="485" y="97" class="vd-title">[原操作方式]</text><text x="485" y="119" class="vd-sub">[关键反馈]</text></g>
+              <g class="vd-node-old"><rect x="725" y="62" width="220" height="80" rx="14"/><circle cx="758" cy="102" r="18"/><text x="758" y="109" class="vd-icon">③</text><text x="785" y="97" class="vd-title">[原交付物]</text><text x="785" y="119" class="vd-sub">[接收方]</text></g>
+              <g class="vd-node-new"><rect x="125" y="228" width="220" height="80" rx="14"/><circle cx="158" cy="268" r="18"/><text x="158" y="275" class="vd-icon">①</text><text x="185" y="263" class="vd-title">[保留的触发动作]</text><text x="185" y="285" class="vd-sub">[角色／入口]</text></g>
+              <g class="vd-node-new"><rect x="425" y="228" width="220" height="80" rx="14"/><circle cx="458" cy="268" r="18"/><text x="458" y="275" class="vd-icon">②</text><text x="485" y="263" class="vd-title">[新操作方式]</text><text x="485" y="285" class="vd-sub">[关键反馈]</text></g>
+              <g class="vd-node-new"><rect x="725" y="228" width="220" height="80" rx="14"/><circle cx="758" cy="268" r="18"/><text x="758" y="275" class="vd-icon">③</text><text x="785" y="263" class="vd-title">[新交付物]</text><text x="785" y="285" class="vd-sub">[接收方]</text></g>
+            </svg></div>
+            <p class="version-compare-note">体验影响：[一句话说明变化如何支持本 Case 的体验目标。]　旧版依据：[来源]；未确认内容标为设计假设。</p>
           </div>
           <h3>现状断点与目标体验</h3>
           <div class="two-col"><div class="info-card blue"><div class="card-topline"></div><h4>现状 · AS-IS</h4><p>[用户当前路径、关键断点与来源。未知的现状不要补成想象中的流程。]</p></div><div class="info-card green"><div class="card-topline"></div><h4>目标 · TO-BE</h4><p>[用户任务会如何推进，在哪个环节得到反馈、交接或恢复支持。]</p></div></div>
